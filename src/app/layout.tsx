@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "@frontend/styles/globals.css";
 
 export const metadata: Metadata = {
-  title: "Fullstack Base Template",
-  description: "Boilerplate Next.js 15 + Supabase com autenticação",
+  title: "AStrategy",
+  description: "AStrategy Intelligence Center",
 };
 
 export default function RootLayout({

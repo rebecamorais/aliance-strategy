@@ -21,10 +21,11 @@ export default async function DashboardPage() {
       <header className="w-full border-b border-border bg-surface/80 backdrop-blur-md sticky top-0 z-50 transition-all">
         <div className="max-w-5xl mx-auto px-4 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="flex items-center gap-3">
-            <img src="/logo.png" alt="Alliance Strategy" className="w-10 h-10 object-contain" />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/logo.png" alt="AStrategy" className="w-10 h-10 object-contain" />
             <div>
               <h1 className="text-base font-medium tracking-tight bg-gradient-to-r from-brand to-violet bg-clip-text text-transparent">
-                Alliance Strategy
+                AStrategy
               </h1>
               <p className="text-[10px] text-muted font-medium tracking-wider uppercase">
                 Intelligence Center
@@ -42,7 +43,7 @@ export default async function DashboardPage() {
           <div className="bg-gradient-to-r from-brand-darker to-brand-dark text-body rounded-2xl p-6 md:p-8 shadow-sm relative overflow-hidden group">
             <div className="absolute right-0 bottom-0 top-0 w-1/3 bg-radial from-brand-light/20 to-transparent pointer-events-none" />
             <h2 className="text-xl md:text-2xl font-medium tracking-tight mb-2 text-body">
-              Welcome to Alliance Strategy
+              Welcome to AStrategy
             </h2>
             <p className="text-brand-light text-xs md:text-sm max-w-2xl leading-relaxed">
               Authentication via Discord was successful. You are in the protected area and now have full access to the intelligence center.
@@ -56,7 +57,7 @@ export default async function DashboardPage() {
       <footer className="w-full border-t border-border bg-surface/50 py-6 mt-12 text-center text-xs text-muted">
         <div className="max-w-5xl mx-auto px-4">
           <p>
-            Alliance Strategy © {new Date().getFullYear()} — Staff Engineering.
+            AStrategy © {new Date().getFullYear()} — Staff Engineering.
           </p>
         </div>
       </footer>

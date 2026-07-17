@@ -17,8 +17,9 @@ function LoginContent() {
     <main className="flex min-h-screen flex-col items-center justify-center bg-page p-4 font-sans text-body">
       <div className="w-full max-w-sm rounded-2xl bg-surface p-8 border border-border text-center shadow-2xl">
         <div className="mb-6">
-          <img src="/logo.png" alt="Alliance Strategy" className="mx-auto mb-4 h-12 w-12 object-contain" />
-          <h1 className="text-2xl font-medium text-body tracking-tight">Alliance Strategy</h1>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/logo.png" alt="AStrategy" className="mx-auto mb-4 h-12 w-12 object-contain" />
+          <h1 className="text-2xl font-medium text-body tracking-tight">AStrategy</h1>
           <p className="text-sm text-muted mt-1">Authenticate to access the intelligence center.</p>
         </div>
 
