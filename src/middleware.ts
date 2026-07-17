@@ -2,6 +2,13 @@ import { createServerClient } from "@supabase/ssr"
 import { NextResponse, type NextRequest } from "next/server"
 
 export async function middleware(request: NextRequest) {
+  const pathname = request.nextUrl.pathname
+  const code = request.nextUrl.searchParams.get("code")
+
+  if (code && pathname === "/") {
+    return NextResponse.redirect(new URL(`/auth/callback?code=${code}`, request.url))
+  }
+
   let supabaseResponse = NextResponse.next({ request })
 
   const url = process.env.SUPABASE_URL
@@ -29,7 +36,6 @@ export async function middleware(request: NextRequest) {
   })
 
   const { data: { user } } = await supabase.auth.getUser()
-  const pathname = request.nextUrl.pathname
 
   if (user) {
     if (
