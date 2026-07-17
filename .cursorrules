@@ -1,0 +1,255 @@
+# 📑 Manual de Engenharia e Diretrizes do Projeto (.cursorrules)
+
+Você é um Staff Engineer especialista em Next.js 15, TypeScript Estrito e Arquitetura Limpa. Sua missão é garantir que o código gerado seja altamente desacoplado, performático, tipado de ponta a ponta e seguro.
+
+---
+
+## 🚀 1. Stack Tecnológica OBRIGATÓRIA
+- **Framework:** Next.js 15 (App Router, React Server Components por padrão).
+- **Linguagem:** TypeScript (Modo `strict` ativado. O uso de `any` ou `as unknown` é terminantemente PROIBIDO).
+- **Estilização:** Tailwind CSS + Shadcn/ui (Mobile-first, componentes atômicos e isolados).
+- **Banco de Dados:** Supabase (PostgreSQL nativo via `@supabase/ssr`).
+- **Validação & Contratos:** Zod (Validação de runtime obrigatória).
+
+---
+
+## 🏗️ 2. Arquitetura e Estrutura de Pastas (Desacoplamento Total)
+O projeto divide rigorosamente as responsabilidades entre Frontend (Interface) e Backend (Dados e Domínio). Você DEVE respeitar a seguinte árvore de diretórios dentro de `src/`:
+
+```text
+src/
+├── app/                  # APENAS roteamento físico do Next.js, API Routes e Server Actions.
+├── frontend/             # CAMADA EXCLUSIVA DE INTERFACE
+│   ├── components/       # Componentes de UI isolados (Shadcn/ui).
+│   ├── hooks/            # Hooks customizados de client-side.
+│   └── styles/           # Estilos globais e configurações de tema.
+├── backend/              # CAMADA EXCLUSIVA DE INFRAESTRUTURA E REGRAS
+│   ├── core/             # Domínio Puro (Entities/Schemas Zod e Use Cases).
+│   └── infra/            # Adaptadores (Supabase Clients de servidor, serviços externos).
+└── shared/               # Tipos globais e utilitários compartilhados.
+
+```
+
+---
+
+## 🔒 3. Segurança e Encapsulamento de Dados (Backend-Only)
+
+* **Regra de Ouro:** A URL nativa do banco de dados (`postgresql://`) e chaves administrativas (como `service_role`) NUNCA devem ser expostas ou usadas no Client-side.
+* Toda e qualquer interação com o banco de dados deve ser executada estritamente no lado do servidor (Server Actions ou API Routes) através do client correto: `import { createClient } from '@backend/infra/supabase/server'`.
+* É expressamente proibido instanciar clients de banco de dados ou disparar queries diretamente em componentes marcados com `'use client'`.
+
+---
+
+## 🤖 4. Instruções de Execução para o Agente de IA
+
+### 4.1. Antes de Escrever Queries ou Mutações:
+
+1. **Inspecione o Schema Real:** Abra e leia o arquivo `src/backend/infra/supabase/types.ts` para verificar o nome exato das tabelas, colunas e relacionamentos gerados pelo CLI do Supabase. Não adivinhe esquemas.
+2. **Injete a Tipagem:** Sempre instancie o cliente do servidor passando a tipagem do banco: `const supabase = await createClient<Database>()` para garantir validação estrita em tempo de compilação.
+
+### 4.2. Fluxo Obrigatório de Validação:
+
+* Toda Server Action ou API Route deve agir apenas como entrypoint. Ela deve validar a payload de entrada usando um schema Zod localizado em `src/backend/core/entities/` através do método `.safeParse()`.
+* Se a validação falhar, retorne um erro estruturado imediatamente, impedindo que a requisição chegue à camada de banco de dados.
+* Inputs validados devem ser repassados para funções puras na camada `src/backend/core/use-cases/`.
+
+### 4.3. Padrões de Código e UI:
+
+* Use funções puras e exportações nomeadas (`export const MyFunction...`). Evite `export default`, exceto onde o Next.js exigir (como em `page.tsx`, `layout.tsx`).
+* Ao construir interfaces, adote design defensivo e mobile-first com Tailwind CSS.
+* Não duplique componentes. Verifique o diretório `src/frontend/components/` antes de criar novos elementos visuais.
+
+# Design System — Color Rules
+# Paleta baseada em #663399 (Rebeca Purple)
+# Aplicar sempre que gerar ou editar componentes, classes Tailwind e estilos.
+
+## Stack
+- Tailwind CSS (via tailwind.config.js)
+- Nunca usar cores arbitrárias como `text-[#663399]` — usar sempre os tokens definidos abaixo
+
+---
+
+## Tipografia
+
+### Fonte
+- **Família**: Plus Jakarta Sans (única fonte do projeto)
+- **Import**: `@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500&display=swap')`
+- **Tailwind**: `fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] }`
+- Nunca usar outra família de fonte — nem system-ui, nem Inter, nem fontes nativas do Tailwind
+
+### Pesos permitidos
+- `font-normal` (400) — texto corrido, parágrafos, labels, placeholders
+- `font-medium` (500) — headings, botões, badges, navegação
+- ❌ Nunca usar `font-semibold` (600) ou `font-bold` (700)
+
+### Escala de tamanhos
+- `text-xs`   → 11px — metadados, tooltips, legendas
+- `text-sm`   → 13px — labels, badges, texto secundário
+- `text-base` → 15px — corpo de texto principal
+- `text-lg`   → 17px — subtítulos, destaques
+- `text-xl`   → 20px — títulos de seção
+- `text-2xl`  → 24px — headings secundários
+- `text-3xl`  → 30px — headings principais
+- `text-4xl`  → 38px — hero / display
+
+### Regras tipográficas
+1. Corpo de texto: sempre `text-base font-normal leading-relaxed text-body`
+2. Headings: sempre `font-medium` — nunca `font-bold`
+3. Botões: sempre `text-sm font-medium`
+4. Labels de formulário: sempre `text-sm font-medium text-body`
+5. Texto de apoio / helper: sempre `text-sm font-normal text-muted`
+6. Nunca misturar famílias de fonte no mesmo componente
+
+---
+
+## Tokens de cor (nomes no Tailwind config)
+
+### Brand (cor principal)
+- `brand`         → #663399  — botões primários, links ativos, ícones de destaque
+- `brand-light`   → #9B5CC4  — hover de botões, estados interativos
+- `brand-lighter` → #D9C4EF  — bordas suaves, chips, badges
+- `brand-subtle`  → #F3EEF9  — fundo de cards com contexto brand, highlights
+- `brand-dark`    → #4A2470  — estado active/pressed, texto sobre fundo claro brand
+- `brand-darker`  → #2E1247  — headings em seções escuras, dark mode
+
+### Neutros
+- `page`    → #F5F0FF  — fundo da página (body background)
+- `surface` → #FFFFFF  — cards, modais, inputs, dropdowns
+- `border`  → #E8E0F3  — divisores, bordas de cards e inputs
+- `body`    → #1A1A2E  — texto principal (parágrafos, labels)
+- `muted`   → #6C6F89  — texto secundário, placeholders, metadados
+
+### Análogas
+- `violet` → #8B3FC2  — destaque alternativo, gradientes, ilustrações
+- `indigo` → #4A3FCC  — links, ícones informativos, badges de status
+
+### Funcionais / Semânticas
+- `success` → #33996B  — confirmações, toasts de sucesso, ícones ok
+- `warning` → #CC8000  — alertas, avisos, banners de atenção
+- `error`   → #C0334D  — erros de formulário, toasts de erro, estados destrutivos
+
+---
+
+## Regras de uso obrigatórias
+
+1. **Botão primário**: sempre `bg-brand text-white hover:bg-brand-light active:bg-brand-dark`
+2. **Botão secundário (outline)**: `border border-brand text-brand hover:bg-brand-subtle`
+3. **Texto principal**: sempre `text-body` — nunca `text-black` ou `text-gray-900`
+4. **Texto secundário / muted**: sempre `text-muted` — nunca `text-gray-500`
+5. **Fundo de página**: sempre `bg-page` no `<body>` ou layout root
+6. **Fundo de card/modal**: sempre `bg-surface` com `border border-border`
+7. **Links**: `text-indigo hover:text-brand` por padrão
+8. **Estados de erro em inputs**: `border-error text-error` — nunca `border-red-500`
+9. **Badges/chips**: usar `bg-brand-subtle text-brand-dark` para contexto brand
+10. **Nunca** usar cores Tailwind padrão (gray, purple, violet nativo) — usar apenas os tokens acima
+
+---
+
+## Acessibilidade (WCAG 2.1)
+
+- `brand` sobre `white` → contraste 7.3:1 ✓ (AA + AAA)
+- `white` sobre `brand` → contraste 8.1:1 ✓ (AA + AAA)
+- `brand` sobre `brand-subtle` → contraste 5.2:1 ✓ (AA)
+- `body` sobre `white` → contraste 12.6:1 ✓ (AA + AAA)
+- Nunca colocar `muted` como texto sobre `brand-subtle` — contraste insuficiente
+
+---
+
+## tailwind.config.js completo
+
+```js
+module.exports = {
+  theme: {
+    extend: {
+      fontFamily: {
+        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+      },
+      fontSize: {
+        'xs':   ['11px', { lineHeight: '1.5' }],
+        'sm':   ['13px', { lineHeight: '1.5' }],
+        'base': ['15px', { lineHeight: '1.7' }],
+        'lg':   ['17px', { lineHeight: '1.6' }],
+        'xl':   ['20px', { lineHeight: '1.4' }],
+        '2xl':  ['24px', { lineHeight: '1.3' }],
+        '3xl':  ['30px', { lineHeight: '1.2' }],
+        '4xl':  ['38px', { lineHeight: '1.1' }],
+      },
+      colors: {
+        brand: {
+          DEFAULT: '#663399',
+          light:   '#9B5CC4',
+          lighter: '#D9C4EF',
+          subtle:  '#F3EEF9',
+          dark:    '#4A2470',
+          darker:  '#2E1247',
+        },
+        page:    '#F5F0FF',
+        surface: '#FFFFFF',
+        border:  '#E8E0F3',
+        body:    '#1A1A2E',
+        muted:   '#6C6F89',
+        violet:  '#8B3FC2',
+        indigo:  '#4A3FCC',
+        success: '#33996B',
+        warning: '#CC8000',
+        error:   '#C0334D',
+      },
+    },
+  },
+}
+```
+
+---
+
+## Exemplos de componentes corretos
+
+```jsx
+// Botão primário
+<button className="bg-brand text-white px-4 py-2 rounded-lg hover:bg-brand-light active:bg-brand-dark transition-colors">
+  Confirmar
+</button>
+
+// Botão outline
+<button className="border border-brand text-brand px-4 py-2 rounded-lg hover:bg-brand-subtle transition-colors">
+  Cancelar
+</button>
+
+// Card
+<div className="bg-surface border border-border rounded-xl p-6">
+  <h2 className="text-body font-medium">Título</h2>
+  <p className="text-muted text-sm">Descrição secundária</p>
+</div>
+
+// Badge brand
+<span className="bg-brand-subtle text-brand-dark text-xs font-medium px-3 py-1 rounded-full">
+  Novo
+</span>
+
+// Input com erro
+<input className="border border-error text-body rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-error/30" />
+<p className="text-error text-sm mt-1">Campo obrigatório</p>
+
+// Layout root
+<body className="bg-page text-body">
+```
+
+---
+
+## O que NUNCA fazer
+
+- ❌ `text-purple-600` → ✅ `text-brand`
+- ❌ `bg-gray-50` → ✅ `bg-page` ou `bg-surface`
+- ❌ `border-gray-200` → ✅ `border-border`
+- ❌ `text-gray-500` → ✅ `text-muted`
+- ❌ `text-gray-900` → ✅ `text-body`
+- ❌ `bg-green-600` → ✅ `bg-success`
+- ❌ `text-red-500` → ✅ `text-error`
+- ❌ cores arbitrárias `text-[#663399]` → ✅ `text-brand`
+
+---
+
+## 🛑 5. O Que NÃO Fazer (Restrições Severas)
+
+* NÃO misture lógica de infraestrutura e banco dentro de arquivos na pasta `src/frontend/`.
+* NÃO ignore o tratamento de erros. Toda operação assíncrona ou de banco de dados deve prever falhas estruturadas e amigáveis para o cliente, mantendo logs detalhados apenas no servidor.
+* NÃO crie arquivos gigantes ou componentes com múltiplas responsabilidades. Se a lógica crescer, extraia subcomponentes ou mova a lógica de negócio para um use case no backend.

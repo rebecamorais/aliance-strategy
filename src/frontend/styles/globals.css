@@ -1,0 +1,145 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500&display=swap');
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  /* Design System Color Tokens */
+  --color-brand: #663399;
+  --color-brand-light: #9B5CC4;
+  --color-brand-lighter: #D9C4EF;
+  --color-brand-subtle: #F3EEF9;
+  --color-brand-dark: #4A2470;
+  --color-brand-darker: #2E1247;
+  
+  --color-page: #F5F0FF;
+  --color-surface: #FFFFFF;
+  --color-body: #1A1A2E;
+  --color-violet: #8B3FC2;
+  --color-indigo: #4A3FCC;
+  --color-success: #33996B;
+  --color-warning: #CC8000;
+  --color-error: #C0334D;
+
+  /* Typography */
+  --font-sans: "Plus Jakarta Sans", sans-serif;
+  --font-heading: "Plus Jakarta Sans", sans-serif;
+  
+  --text-xs: 11px;
+  --text-xs--line-height: 1.5;
+  --text-sm: 13px;
+  --text-sm--line-height: 1.5;
+  --text-base: 15px;
+  --text-base--line-height: 1.7;
+  --text-lg: 17px;
+  --text-lg--line-height: 1.6;
+  --text-xl: 20px;
+  --text-xl--line-height: 1.4;
+  --text-2xl: 24px;
+  --text-2xl--line-height: 1.3;
+  --text-3xl: 30px;
+  --text-3xl--line-height: 1.2;
+  --text-4xl: 38px;
+  --text-4xl--line-height: 1.1;
+
+  /* Shadcn Core Theme Mappings */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-mono: var(--font-geist-mono);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+:root {
+  --background: #F5F0FF;          /* page background */
+  --foreground: #1A1A2E;          /* body text */
+  --card: #FFFFFF;                /* surface background */
+  --card-foreground: #1A1A2E;     /* body text */
+  --popover: #FFFFFF;             /* surface background */
+  --popover-foreground: #1A1A2E;  /* body text */
+  --primary: #663399;             /* brand color */
+  --primary-foreground: #FFFFFF;  /* white on brand */
+  --secondary: #F3EEF9;           /* brand-subtle */
+  --secondary-foreground: #4A2470;/* brand-dark */
+  --muted: #F3EEF9;               /* brand-subtle background */
+  --muted-foreground: #6C6F89;    /* muted text */
+  --accent: #F3EEF9;              /* brand-subtle */
+  --accent-foreground: #663399;   /* brand color */
+  --destructive: #C0334D;         /* error color */
+  --destructive-foreground: #FFFFFF;
+  --border: #E8E0F3;              /* border color */
+  --input: #E8E0F3;               /* border color */
+  --ring: #9B5CC4;                /* brand-light */
+  --radius: 0.625rem;
+  
+  --chart-1: #663399;
+  --chart-2: #8B3FC2;
+  --chart-3: #4A3FCC;
+  --chart-4: #33996B;
+  --chart-5: #CC8000;
+}
+
+.dark {
+  --background: #1A1A2E;          /* body / page dark */
+  --foreground: #F5F0FF;          /* page / foreground light */
+  --card: #2E1247;                /* brand-darker */
+  --card-foreground: #F5F0FF;
+  --popover: #2E1247;             /* brand-darker */
+  --popover-foreground: #F5F0FF;
+  --primary: #9B5CC4;             /* brand-light */
+  --primary-foreground: #FFFFFF;
+  --secondary: #4A2470;           /* brand-dark */
+  --secondary-foreground: #F3EEF9;/* brand-subtle */
+  --muted: #4A2470;
+  --muted-foreground: #D9C4EF;    /* brand-lighter */
+  --accent: #4A2470;
+  --accent-foreground: #9B5CC4;
+  --destructive: #C0334D;
+  --destructive-foreground: #FFFFFF;
+  --border: #4A2470;
+  --input: #4A2470;
+  --ring: #9B5CC4;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+}
+
+@utility text-muted {
+  @apply text-muted-foreground;
+}
+
+@utility bg-muted {
+  background-color: var(--muted);
+}
