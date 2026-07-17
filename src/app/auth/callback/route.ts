@@ -12,7 +12,7 @@ export async function GET(request: Request) {
     
     if (!error) {
       // Successful login. Redirect to internal protected area
-      return NextResponse.redirect(`${siteUrl}/dashboard`)
+      return NextResponse.redirect(`${siteUrl}/dashboard/profile`)
     }
   }
 

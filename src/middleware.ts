@@ -43,7 +43,7 @@ export async function middleware(request: NextRequest) {
       pathname.startsWith("/auth/login") ||
       pathname.startsWith("/auth/register")
     ) {
-      return NextResponse.redirect(new URL("/dashboard", request.url))
+      return NextResponse.redirect(new URL("/dashboard/profile", request.url))
     }
   } else {
     if (pathname.startsWith("/dashboard")) {
