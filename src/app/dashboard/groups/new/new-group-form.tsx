@@ -1,28 +1,49 @@
 "use client"
 
-import { useActionState } from "react"
-import { createGroupAction } from "@/app/actions/group.actions"
-import type { ActionResponse } from "@shared/action-response"
+import { useState, useTransition } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-
-const initialState: ActionResponse = {
-  success: false,
-  message: "",
-}
+import type { ActionResponse } from "@shared/action-response"
 
 export function NewGroupForm() {
   const router = useRouter()
-  const [state, formAction, isPending] = useActionState(
-    async (prevState: ActionResponse, formData: FormData) => {
-      const response = await createGroupAction(prevState, formData)
-      if (response.success) {
-        router.push("/dashboard/explore")
+  const [isPending, startTransition] = useTransition()
+  const [errorMsg, setErrorMsg] = useState("")
+  const [errors, setErrors] = useState<Record<string, string[]>>({})
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setErrorMsg("")
+    setErrors({})
+
+    const formData = new FormData(e.currentTarget)
+    const name = formData.get("name") as string
+    const description = formData.get("description") as string
+
+    startTransition(async () => {
+      try {
+        const res = await fetch("/api/groups", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, description }),
+        })
+
+        const data: ActionResponse = await res.json()
+
+        if (res.ok && data.success) {
+          router.push("/dashboard/explore")
+          router.refresh()
+        } else {
+          setErrorMsg(data.message || "Failed to create group.")
+          if (data.errors) {
+            setErrors(data.errors)
+          }
+        }
+      } catch {
+        setErrorMsg("An unexpected error occurred.")
       }
-      return response
-    },
-    initialState
-  )
+    })
+  }
 
   return (
     <main className="flex-1 max-w-lg w-full mx-auto py-12 px-4 font-sans text-body">
@@ -40,7 +61,7 @@ export function NewGroupForm() {
       </div>
 
       <div className="bg-surface border border-border rounded-xl p-6 shadow-xl">
-        <form action={formAction} className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-5">
           <div>
             <label htmlFor="name" className="block text-xs font-medium text-muted mb-1.5">
               Group Name
@@ -51,12 +72,10 @@ export function NewGroupForm() {
               name="name"
               placeholder="e.g. Alpha Squad"
               className={`w-full bg-page border rounded-lg px-3 py-2 text-sm text-body placeholder:text-muted/50 focus:outline-none focus:ring-2 focus:ring-brand/30 transition-all ${
-                state.errors?.name ? "border-error" : "border-border"
+                errors.name ? "border-error" : "border-border"
               }`}
             />
-            {state.errors?.name && (
-              <p className="text-xs text-error mt-1">{state.errors.name[0]}</p>
-            )}
+            {errors.name && <p className="text-xs text-error mt-1">{errors.name[0]}</p>}
           </div>
 
           <div>
@@ -69,17 +88,17 @@ export function NewGroupForm() {
               rows={4}
               placeholder="Describe the group's objective and rules..."
               className={`w-full bg-page border rounded-lg px-3 py-2 text-sm text-body placeholder:text-muted/50 focus:outline-none focus:ring-2 focus:ring-brand/30 transition-all ${
-                state.errors?.description ? "border-error" : "border-border"
+                errors.description ? "border-error" : "border-border"
               }`}
             />
-            {state.errors?.description && (
-              <p className="text-xs text-error mt-1">{state.errors.description[0]}</p>
+            {errors.description && (
+              <p className="text-xs text-error mt-1">{errors.description[0]}</p>
             )}
           </div>
 
-          {state.message && !state.success && (
+          {errorMsg && (
             <div className="rounded-lg border border-error/20 bg-error/10 p-3 text-xs text-error">
-              {state.message}
+              {errorMsg}
             </div>
           )}
 

@@ -2,7 +2,6 @@
 
 import { useState, useTransition } from "react"
 import { Search, Users, Check, Clock, Plus } from "lucide-react"
-import { applyToGroupAction } from "@/app/actions/group.actions"
 import type { GroupWithMemberCount } from "@backend/core/entities/group.schema"
 import Link from "next/link"
 
@@ -25,18 +24,22 @@ export function ExploreGroupsContent({ initialGroups }: Props) {
 
     startTransition(async () => {
       try {
-        const res = await applyToGroupAction(groupId)
-        if (res.success) {
-          setSuccessMsg(res.message || "Application sent successfully!")
+        const res = await fetch(`/api/groups/${groupId}/apply`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+        })
+
+        const data = await res.json()
+
+        if (res.ok && data.success) {
+          setSuccessMsg(data.message || "Application sent successfully!")
           setGroups((prev) =>
             prev.map((g) =>
-              g.id === groupId
-                ? { ...g, has_pending_application: true }
-                : g
+              g.id === groupId ? { ...g, has_pending_application: true } : g
             )
           )
         } else {
-          setErrorMsg(res.message || "Failed to submit application.")
+          setErrorMsg(data.message || "Failed to submit application.")
         }
       } catch {
         setErrorMsg("An unexpected error occurred.")

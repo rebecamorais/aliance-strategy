@@ -1,11 +1,31 @@
-import { listGroupsAction } from "@/app/actions/group.actions"
+import { createClient } from "@/utils/supabase/server"
+import { SupabaseGroupRepository } from "@backend/infra/repositories/supabase-group.repository"
+import { isSupabasePlaceholder } from "@shared/supabase-config"
 import { AuthHeader } from "@/frontend/components/auth/auth-header"
 import { ExploreGroupsContent } from "./explore-content"
+
+import type { GroupWithMemberCount } from "@backend/core/entities/group.schema"
 
 export const dynamic = "force-dynamic"
 
 export default async function ExplorePage() {
-  const groups = await listGroupsAction()
+  let groups: GroupWithMemberCount[] = []
+
+  if (!isSupabasePlaceholder()) {
+    try {
+      const supabase = await createClient()
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+
+      if (user) {
+        const repository = new SupabaseGroupRepository(supabase)
+        groups = await repository.listAll(user.id)
+      }
+    } catch (err) {
+      console.error("Failed to load initial groups list:", err)
+    }
+  }
 
   return (
     <div className="min-h-screen bg-page text-body flex flex-col font-sans">
