@@ -53,14 +53,6 @@ export default async function DashboardPage() {
 
         <NoticeBoard initialNotices={notices} />
       </main>
-
-      <footer className="w-full border-t border-border bg-surface/50 py-6 mt-12 text-center text-xs text-muted">
-        <div className="max-w-5xl mx-auto px-4">
-          <p>
-            AStrategy © {new Date().getFullYear()} — Staff Engineering.
-          </p>
-        </div>
-      </footer>
     </div>
   )
 }
