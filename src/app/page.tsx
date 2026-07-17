@@ -31,16 +31,16 @@ export default async function Home() {
           </div>
         </div>
         <div className="max-w-5xl mx-auto px-4 pb-4 flex flex-wrap gap-2">
-            <span className="text-[10px] font-medium bg-brand-subtle text-brand-dark border border-brand-lighter px-2.5 py-0.5 rounded-md">
+            <span className="text-[10px] font-medium bg-brand-subtle text-brand-light border border-brand-lighter px-2.5 py-0.5 rounded-md">
               Next.js 15
             </span>
-            <span className="text-[10px] font-medium bg-brand-subtle text-brand-dark border border-brand-lighter px-2.5 py-0.5 rounded-md">
+            <span className="text-[10px] font-medium bg-brand-subtle text-brand-light border border-brand-lighter px-2.5 py-0.5 rounded-md">
               Tailwind v4
             </span>
-            <span className="text-[10px] font-medium bg-brand-subtle text-brand-dark border border-brand-lighter px-2.5 py-0.5 rounded-md">
+            <span className="text-[10px] font-medium bg-brand-subtle text-brand-light border border-brand-lighter px-2.5 py-0.5 rounded-md">
               Supabase SSR
             </span>
-            <span className="text-[10px] font-medium bg-brand-subtle text-brand-dark border border-brand-lighter px-2.5 py-0.5 rounded-md">
+            <span className="text-[10px] font-medium bg-brand-subtle text-brand-light border border-brand-lighter px-2.5 py-0.5 rounded-md">
               TypeScript Strict
             </span>
         </div>
@@ -50,14 +50,14 @@ export default async function Home() {
       <main className="flex-1 max-w-5xl w-full mx-auto py-8">
         {/* Banner de Boas-Vindas */}
         <div className="px-4 mb-6">
-          <div className="bg-gradient-to-r from-brand-darker to-brand-dark text-white rounded-2xl p-6 md:p-8 shadow-sm relative overflow-hidden group">
+          <div className="bg-gradient-to-r from-brand-darker to-brand-dark text-body rounded-2xl p-6 md:p-8 shadow-sm relative overflow-hidden group">
             {/* Elemento Decorativo */}
             <div className="absolute right-0 bottom-0 top-0 w-1/3 bg-radial from-brand-light/20 to-transparent pointer-events-none" />
             
-            <h2 className="text-xl md:text-2xl font-medium tracking-tight mb-2">
+            <h2 className="text-xl md:text-2xl font-medium tracking-tight mb-2 text-body">
               Bem-vindo ao Boilerplate Base
             </h2>
-            <p className="text-brand-lighter text-xs md:text-sm max-w-2xl leading-relaxed">
+            <p className="text-brand-light text-xs md:text-sm max-w-2xl leading-relaxed">
               Este template foi estruturado com total desacoplamento entre frontend e backend. 
               As regras de negócio residem no Core (Pure TS), a infraestrutura está isolada no Backend 
               e a interface é mobile-first baseada na paleta de cores Rebeca Purple.

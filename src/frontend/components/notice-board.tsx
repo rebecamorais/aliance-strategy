@@ -105,7 +105,7 @@ export function NoticeBoard({ initialNotices }: NoticeBoardProps) {
             <Button
               type="submit"
               disabled={isPending}
-              className="w-full bg-brand text-white hover:bg-brand-light active:bg-brand-dark transition-all duration-200 font-medium py-2 rounded-lg shadow-sm"
+              className="w-full bg-brand text-page hover:bg-brand-light active:bg-brand-dark transition-all duration-200 font-medium py-2 rounded-lg shadow-sm"
             >
               {isPending ? "Publicando..." : "Publicar Aviso"}
             </Button>
@@ -132,7 +132,7 @@ export function NoticeBoard({ initialNotices }: NoticeBoardProps) {
           <h2 className="text-xl font-medium text-body tracking-tight">
             Avisos Recentes
           </h2>
-          <span className="bg-brand-subtle text-brand-dark text-xs font-medium px-3 py-0.5 rounded-full border border-brand-lighter shadow-2xs">
+          <span className="bg-brand-subtle text-brand-light text-xs font-medium px-3 py-0.5 rounded-full border border-brand-lighter shadow-2xs">
             {initialNotices.length} avisos
           </span>
         </div>

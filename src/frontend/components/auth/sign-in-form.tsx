@@ -72,7 +72,7 @@ export function SignInForm({ callbackError }: { callbackError?: boolean }) {
       <Button
         type="submit"
         disabled={isPending}
-        className="w-full bg-brand text-white hover:bg-brand-light active:bg-brand-dark"
+        className="w-full bg-brand text-page hover:bg-brand-light active:bg-brand-dark"
       >
         {isPending ? "Entrando…" : "Entrar"}
       </Button>

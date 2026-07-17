@@ -7,21 +7,23 @@
 
 @theme inline {
   /* Design System Color Tokens */
-  --color-brand: #663399;
-  --color-brand-light: #9B5CC4;
-  --color-brand-lighter: #D9C4EF;
-  --color-brand-subtle: #F3EEF9;
-  --color-brand-dark: #4A2470;
-  --color-brand-darker: #2E1247;
+  --color-brand: #A873D9;
+  --color-brand-light: #C9A6EC;
+  --color-brand-lighter: #3D2A5C;
+  --color-brand-subtle: #241A38;
+  --color-brand-dark: #7A4FB5;
+  --color-brand-darker: #563680;
   
-  --color-page: #F5F0FF;
-  --color-surface: #FFFFFF;
-  --color-body: #1A1A2E;
-  --color-violet: #8B3FC2;
-  --color-indigo: #4A3FCC;
-  --color-success: #33996B;
-  --color-warning: #CC8000;
-  --color-error: #C0334D;
+  --color-page: #120D1F;
+  --color-surface: #1C1530;
+  --color-border: #332748;
+  --color-body: #F0EAFA;
+  --color-muted: #9C93B8;
+  --color-violet: #B084E0;
+  --color-indigo: #8B84F2;
+  --color-success: #4CBE8C;
+  --color-warning: #E0A233;
+  --color-error: #E0637F;
 
   /* Typography */
   --font-sans: "Plus Jakarta Sans", sans-serif;
@@ -74,54 +76,54 @@
 }
 
 :root {
-  --background: #F5F0FF;          /* page background */
-  --foreground: #1A1A2E;          /* body text */
-  --card: #FFFFFF;                /* surface background */
-  --card-foreground: #1A1A2E;     /* body text */
-  --popover: #FFFFFF;             /* surface background */
-  --popover-foreground: #1A1A2E;  /* body text */
-  --primary: #663399;             /* brand color */
-  --primary-foreground: #FFFFFF;  /* white on brand */
-  --secondary: #F3EEF9;           /* brand-subtle */
-  --secondary-foreground: #4A2470;/* brand-dark */
-  --muted: #F3EEF9;               /* brand-subtle background */
-  --muted-foreground: #6C6F89;    /* muted text */
-  --accent: #F3EEF9;              /* brand-subtle */
-  --accent-foreground: #663399;   /* brand color */
-  --destructive: #C0334D;         /* error color */
-  --destructive-foreground: #FFFFFF;
-  --border: #E8E0F3;              /* border color */
-  --input: #E8E0F3;               /* border color */
-  --ring: #9B5CC4;                /* brand-light */
+  --background: #120D1F;          /* page background */
+  --foreground: #F0EAFA;          /* body text */
+  --card: #1C1530;                /* surface background */
+  --card-foreground: #F0EAFA;     /* body text */
+  --popover: #1C1530;             /* surface background */
+  --popover-foreground: #F0EAFA;  /* body text */
+  --primary: #A873D9;             /* brand color */
+  --primary-foreground: #120D1F;  /* page background (contrast calibrated) */
+  --secondary: #241A38;           /* brand-subtle */
+  --secondary-foreground: #C9A6EC;/* brand-light */
+  --muted: #241A38;               /* brand-subtle background */
+  --muted-foreground: #9C93B8;    /* muted text */
+  --accent: #241A38;              /* brand-subtle */
+  --accent-foreground: #A873D9;   /* brand color */
+  --destructive: #E0637F;         /* error color */
+  --destructive-foreground: #F0EAFA;
+  --border: #332748;              /* border color */
+  --input: #332748;               /* border color */
+  --ring: #C9A6EC;                /* brand-light */
   --radius: 0.625rem;
   
-  --chart-1: #663399;
-  --chart-2: #8B3FC2;
-  --chart-3: #4A3FCC;
-  --chart-4: #33996B;
-  --chart-5: #CC8000;
+  --chart-1: #A873D9;
+  --chart-2: #B084E0;
+  --chart-3: #8B84F2;
+  --chart-4: #4CBE8C;
+  --chart-5: #E0A233;
 }
 
 .dark {
-  --background: #1A1A2E;          /* body / page dark */
-  --foreground: #F5F0FF;          /* page / foreground light */
-  --card: #2E1247;                /* brand-darker */
-  --card-foreground: #F5F0FF;
-  --popover: #2E1247;             /* brand-darker */
-  --popover-foreground: #F5F0FF;
-  --primary: #9B5CC4;             /* brand-light */
-  --primary-foreground: #FFFFFF;
-  --secondary: #4A2470;           /* brand-dark */
-  --secondary-foreground: #F3EEF9;/* brand-subtle */
-  --muted: #4A2470;
-  --muted-foreground: #D9C4EF;    /* brand-lighter */
-  --accent: #4A2470;
-  --accent-foreground: #9B5CC4;
-  --destructive: #C0334D;
-  --destructive-foreground: #FFFFFF;
-  --border: #4A2470;
-  --input: #4A2470;
-  --ring: #9B5CC4;
+  --background: #120D1F;          /* page background */
+  --foreground: #F0EAFA;          /* body text */
+  --card: #1C1530;                /* surface background */
+  --card-foreground: #F0EAFA;     /* body text */
+  --popover: #1C1530;             /* surface background */
+  --popover-foreground: #F0EAFA;  /* body text */
+  --primary: #A873D9;             /* brand color */
+  --primary-foreground: #120D1F;  /* page background */
+  --secondary: #241A38;           /* brand-subtle */
+  --secondary-foreground: #C9A6EC;/* brand-light */
+  --muted: #241A38;               /* brand-subtle background */
+  --muted-foreground: #9C93B8;    /* muted text */
+  --accent: #241A38;              /* brand-subtle */
+  --accent-foreground: #A873D9;   /* brand color */
+  --destructive: #E0637F;         /* error color */
+  --destructive-foreground: #F0EAFA;
+  --border: #332748;              /* border color */
+  --input: #332748;               /* border color */
+  --ring: #C9A6EC;                /* brand-light */
 }
 
 @layer base {

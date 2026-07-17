@@ -1,6 +1,6 @@
-# Design system — guia de cores e tipografia
+# Design system — guia de cores e tipografia (Dark Mode)
 
-> Paleta baseada em `#663399` (Rebeca Purple). 
+> Paleta baseada em `#663399` (Rebeca Purple), adaptada para fundo escuro.
 > Fonte: Plus Jakarta Sans. Stack: Tailwind CSS.
 
 ---
@@ -25,23 +25,23 @@ fontSize: {
 },
 colors: {
   brand: {
-    DEFAULT: '#663399',
-    light:   '#9B5CC4',
-    lighter: '#D9C4EF',
-    subtle:  '#F3EEF9',
-    dark:    '#4A2470',
-    darker:  '#2E1247',
+    DEFAULT: '#A873D9',
+    light:   '#C9A6EC',
+    lighter: '#3D2A5C',
+    subtle:  '#241A38',
+    dark:    '#7A4FB5',
+    darker:  '#563680',
   },
-  page:    '#F5F0FF',
-  surface: '#FFFFFF',
-  border:  '#E8E0F3',
-  body:    '#1A1A2E',
-  muted:   '#6C6F89',
-  violet:  '#8B3FC2',
-  indigo:  '#4A3FCC',
-  success: '#33996B',
-  warning: '#CC8000',
-  error:   '#C0334D',
+  page:    '#120D1F',
+  surface: '#1C1530',
+  border:  '#332748',
+  body:    '#F0EAFA',
+  muted:   '#9C93B8',
+  violet:  '#B084E0',
+  indigo:  '#8B84F2',
+  success: '#4CBE8C',
+  warning: '#E0A233',
+  error:   '#E0637F',
 },
 ```
 
@@ -93,37 +93,37 @@ Plus Jakarta Sans — fonte única do projeto. Não misturar com outras família
 
 | Token | Hex | Uso |
 |---|---|---|
-| `brand` | `#663399` | Botões primários, links ativos, ícones de destaque |
-| `brand-light` | `#9B5CC4` | Hover de botões e elementos interativos |
-| `brand-lighter` | `#D9C4EF` | Bordas suaves, chips, badges |
-| `brand-subtle` | `#F3EEF9` | Fundo de cards com contexto brand |
-| `brand-dark` | `#4A2470` | Estado active/pressed, texto sobre fundo brand claro |
-| `brand-darker` | `#2E1247` | Headings em seções escuras |
+| `brand` | `#A873D9` | Botões primários, links ativos, ícones de destaque |
+| `brand-light` | `#C9A6EC` | Hover de botões e elementos interativos |
+| `brand-lighter` | `#3D2A5C` | Bordas suaves, chips, badges (sobre fundo escuro) |
+| `brand-subtle` | `#241A38` | Fundo de cards com contexto brand |
+| `brand-dark` | `#7A4FB5` | Estado active/pressed |
+| `brand-darker` | `#563680` | Headings em seções com fundo brand-subtle |
 
 ### Neutros
 
 | Token | Hex | Uso |
 |---|---|---|
-| `page` | `#F5F0FF` | Fundo da página (`<body>`) |
-| `surface` | `#FFFFFF` | Cards, modais, inputs, dropdowns |
-| `border` | `#E8E0F3` | Divisores e bordas |
-| `body` | `#1A1A2E` | Texto principal |
-| `muted` | `#6C6F89` | Texto secundário, placeholders |
+| `page` | `#120D1F` | Fundo da página (`<body>`) |
+| `surface` | `#1C1530` | Cards, modais, inputs, dropdowns |
+| `border` | `#332748` | Divisores e bordas |
+| `body` | `#F0EAFA` | Texto principal |
+| `muted` | `#9C93B8` | Texto secundário, placeholders |
 
 ### Análogas
 
 | Token | Hex | Uso |
 |---|---|---|
-| `violet` | `#8B3FC2` | Destaque alternativo, ilustrações |
-| `indigo` | `#4A3FCC` | Links, ícones informativos |
+| `violet` | `#B084E0` | Destaque alternativo, ilustrações |
+| `indigo` | `#8B84F2` | Links, ícones informativos |
 
 ### Funcionais
 
 | Token | Hex | Uso |
 |---|---|---|
-| `success` | `#33996B` | Confirmações, toasts de sucesso |
-| `warning` | `#CC8000` | Alertas e avisos |
-| `error` | `#C0334D` | Erros de formulário, estados destrutivos |
+| `success` | `#4CBE8C` | Confirmações, toasts de sucesso |
+| `warning` | `#E0A233` | Alertas e avisos |
+| `error` | `#E0637F` | Erros de formulário, estados destrutivos |
 
 ---
 
@@ -131,10 +131,11 @@ Plus Jakarta Sans — fonte única do projeto. Não misturar com outras família
 
 | Combinação | Contraste | Nível |
 |---|---|---|
-| `#663399` sobre branco | 7.3:1 | AA + AAA ✓ |
-| Branco sobre `#663399` | 8.1:1 | AA + AAA ✓ |
-| `#663399` sobre `#F5F0FF` | 5.2:1 | AA ✓ |
-| `#1A1A2E` sobre branco | 12.6:1 | AA + AAA ✓ |
+| `#A873D9` sobre `#120D1F` | ~6.8:1 | AA + AAA ✓ |
+| `#120D1F` sobre `#A873D9` | ~6.8:1 | AA ✓ |
+| `#A873D9` sobre `#1C1530` | ~6.2:1 | AA + AAA ✓ |
+| `#F0EAFA` sobre `#120D1F` | ~15.8:1 | AA + AAA ✓ |
+| `#9C93B8` sobre `#120D1F` | ~6.1:1 | AA ✓ |
 
 ---
 
@@ -142,7 +143,7 @@ Plus Jakarta Sans — fonte única do projeto. Não misturar com outras família
 
 ### Botão primário
 ```html
-<button class="bg-brand text-white px-4 py-2 rounded-lg
+<button class="bg-brand text-page px-4 py-2 rounded-lg
                hover:bg-brand-light active:bg-brand-dark transition-colors">
   Confirmar
 </button>
@@ -166,14 +167,14 @@ Plus Jakarta Sans — fonte única do projeto. Não misturar com outras família
 
 ### Badge
 ```html
-<span class="bg-brand-subtle text-brand-dark text-xs font-medium px-3 py-1 rounded-full">
+<span class="bg-brand-subtle text-brand-light text-xs font-medium px-3 py-1 rounded-full">
   Novo
 </span>
 ```
 
 ### Input com erro
 ```html
-<input class="border border-error rounded-lg px-3 py-2
+<input class="bg-surface border border-error rounded-lg px-3 py-2 text-body
               focus:outline-none focus:ring-2 focus:ring-error/30" />
 <p class="text-error text-sm mt-1">Campo obrigatório</p>
 ```
@@ -187,10 +188,11 @@ Plus Jakarta Sans — fonte única do projeto. Não misturar com outras família
 
 ## Regras rápidas
 
-- Texto principal → sempre `text-body`, nunca `text-black` ou `text-gray-900`
-- Texto secundário → sempre `text-muted`, nunca `text-gray-500`
+- Texto principal → sempre `text-body`, nunca `text-white` ou `text-gray-100`
+- Texto secundário → sempre `text-muted`, nunca `text-gray-400`
 - Fundo de página → sempre `bg-page`
 - Fundo de card → sempre `bg-surface`
 - Bordas → sempre `border-border`
+- Botões primários usam `text-page` (não branco puro) para manter o contraste calibrado sobre `brand`
 - Nunca usar cores nativas do Tailwind (`gray`, `purple`, `violet`) — usar apenas os tokens acima
-- Nunca usar cores arbitrárias como `text-[#663399]`
+- Nunca usar cores arbitrárias como `text-[#A873D9]`

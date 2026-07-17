@@ -38,7 +38,7 @@ export async function AuthHeader() {
           </Link>
           <Link
             href="/auth/register"
-            className="text-xs font-medium rounded-lg bg-brand px-3 py-1.5 text-white hover:bg-brand-light active:bg-brand-dark transition-colors"
+            className="text-xs font-medium rounded-lg bg-brand px-3 py-1.5 text-page hover:bg-brand-light active:bg-brand-dark transition-colors"
           >
             Criar conta
           </Link>
