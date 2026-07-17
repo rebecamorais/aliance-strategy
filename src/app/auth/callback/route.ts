@@ -1,19 +1,21 @@
-import { createClient } from "@backend/infra/supabase/server"
 import { NextResponse } from "next/server"
+import { createClient } from "@/utils/supabase/server"
 
 export async function GET(request: Request) {
-  const { searchParams, origin } = new URL(request.url)
+  const { searchParams } = new URL(request.url)
   const code = searchParams.get("code")
-  const next = searchParams.get("next") ?? "/"
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
 
   if (code) {
     const supabase = await createClient()
     const { error } = await supabase.auth.exchangeCodeForSession(code)
-
+    
     if (!error) {
-      return NextResponse.redirect(`${origin}${next}`)
+      // Successful login. Redirect to internal protected area
+      return NextResponse.redirect(`${siteUrl}/dashboard`)
     }
   }
 
-  return NextResponse.redirect(`${origin}/auth/login?error=callback`)
+  // Authentication failed or code missing
+  return NextResponse.redirect(`${siteUrl}/?error=auth_failed`)
 }

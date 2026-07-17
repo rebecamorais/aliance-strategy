@@ -1,4 +1,4 @@
-/** Chave anon padrão do Supabase local (`supabase start`). */
+/** Default anonymous key for local Supabase (supabase start). */
 const LOCAL_ANON_KEY_PREFIX = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vI"
 
 export function isSupabaseLocalUrl(url: string | undefined): boolean {
@@ -11,10 +11,10 @@ export function isSupabaseLocalUrl(url: string | undefined): boolean {
   }
 }
 
-/** true = app em modo demo (sem stack local rodando / env incompleto). */
+/** Returns true if the app is in demo/placeholder mode (local stack not running or env incomplete). */
 export function isSupabasePlaceholder(): boolean {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  const url = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
   if (!url || !key) return true
 

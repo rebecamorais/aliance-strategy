@@ -4,10 +4,10 @@ import { NextResponse, type NextRequest } from "next/server"
 export async function middleware(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request })
 
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  const url = process.env.SUPABASE_URL
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY
 
-  if (!url || !key || url.includes("your-project-id") || key.includes("your-supabase-anon-key")) {
+  if (!url || !key) {
     return supabaseResponse
   }
 
@@ -28,7 +28,25 @@ export async function middleware(request: NextRequest) {
     },
   })
 
-  await supabase.auth.getUser()
+  const { data: { user } } = await supabase.auth.getUser()
+  const pathname = request.nextUrl.pathname
+
+  if (user) {
+    if (
+      pathname === "/" ||
+      pathname.startsWith("/auth/login") ||
+      pathname.startsWith("/auth/register")
+    ) {
+      return NextResponse.redirect(new URL("/dashboard", request.url))
+    }
+  } else {
+    if (pathname.startsWith("/dashboard")) {
+      return NextResponse.redirect(new URL("/", request.url))
+    }
+    if (pathname.startsWith("/auth/login") || pathname.startsWith("/auth/register")) {
+      return NextResponse.redirect(new URL("/", request.url))
+    }
+  }
 
   return supabaseResponse
 }
