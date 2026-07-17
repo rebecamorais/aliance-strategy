@@ -21,9 +21,7 @@ export default async function DashboardPage() {
       <header className="w-full border-b border-border bg-surface/80 backdrop-blur-md sticky top-0 z-50 transition-all">
         <div className="max-w-5xl mx-auto px-4 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-brand to-violet flex items-center justify-center text-page font-medium text-lg shadow-md shadow-brand/20">
-              AS
-            </div>
+            <img src="/logo.png" alt="Alliance Strategy" className="w-10 h-10 object-contain" />
             <div>
               <h1 className="text-base font-medium tracking-tight bg-gradient-to-r from-brand to-violet bg-clip-text text-transparent">
                 Alliance Strategy
