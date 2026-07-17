@@ -51,6 +51,78 @@ export type Database = {
         }
         Relationships: []
       }
+      groups: {
+        Row: {
+          id: string
+          name: string
+          description: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          name: string
+          description: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          name?: string
+          description?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      group_members: {
+        Row: {
+          id: string
+          profile_id: string
+          group_id: string
+          role: Database["public"]["Enums"]["group_role"]
+          joined_at: string
+        }
+        Insert: {
+          id?: string
+          profile_id: string
+          group_id: string
+          role?: Database["public"]["Enums"]["group_role"]
+          joined_at?: string
+        }
+        Update: {
+          id?: string
+          profile_id?: string
+          group_id?: string
+          role?: Database["public"]["Enums"]["group_role"]
+          joined_at?: string
+        }
+        Relationships: []
+      }
+      applications: {
+        Row: {
+          id: string
+          profile_id: string
+          group_id: string
+          status: Database["public"]["Enums"]["application_status"]
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          profile_id: string
+          group_id: string
+          status?: Database["public"]["Enums"]["application_status"]
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          profile_id?: string
+          group_id?: string
+          status?: Database["public"]["Enums"]["application_status"]
+          created_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -59,7 +131,8 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      group_role: "CREATOR" | "OFFICIAL" | "MEMBER"
+      application_status: "PENDING" | "ACCEPTED" | "REJECTED"
     }
     CompositeTypes: {
       [_ in never]: never
