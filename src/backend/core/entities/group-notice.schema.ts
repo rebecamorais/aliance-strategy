@@ -17,6 +17,7 @@ export interface GroupNotice {
   createdAt: string
   profile: {
     full_name: string | null
-    email: string
+    nickname: string | null
+    main_account: string
   }
 }

@@ -77,7 +77,7 @@ export interface GroupManagementMember {
   role: GroupRole
   joined_at: string
   main_account: string
-  email: string
+  nickname: string | null
 }
 
 export interface GroupManagementApplication {
@@ -85,7 +85,7 @@ export interface GroupManagementApplication {
   profile_id: string
   created_at: string
   main_account: string
-  email: string
+  nickname: string | null
 }
 
 export interface MyGroupDetails extends GroupWithMemberCount {

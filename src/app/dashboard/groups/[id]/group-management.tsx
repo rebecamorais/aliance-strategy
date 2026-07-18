@@ -9,7 +9,7 @@ interface Member {
   role: string
   joined_at: string
   main_account: string
-  email: string
+  nickname: string | null
 }
 
 interface Application {
@@ -17,7 +17,7 @@ interface Application {
   profile_id: string
   created_at: string
   main_account: string
-  email: string
+  nickname: string | null
 }
 
 interface Log {
@@ -171,8 +171,10 @@ export function GroupManagement({
             {applications.map((app) => (
               <div key={app.id} className="py-3 flex items-center justify-between gap-4 first:pt-0 last:pb-0">
                 <div>
-                  <p className="text-xs font-medium text-body">@{app.main_account}</p>
-                  <p className="text-[10px] text-muted">{app.email}</p>
+                  <p className="text-xs font-medium text-body">
+                    @{app.main_account}
+                    {app.nickname && <span className="text-[10px] text-muted font-normal ml-1.5">({app.nickname})</span>}
+                  </p>
                 </div>
                 <div className="flex items-center gap-2">
                   <button
@@ -209,12 +211,14 @@ export function GroupManagement({
               <div key={m.profile_id} className="py-3 flex items-center justify-between gap-4 first:pt-0 last:pb-0">
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-medium text-body">@{m.main_account}</span>
+                    <span className="text-xs font-medium text-body">
+                      @{m.main_account}
+                      {m.nickname && <span className="text-[10px] text-muted font-normal ml-1.5">({m.nickname})</span>}
+                    </span>
                     <span className="text-[9px] font-medium tracking-wide uppercase px-2 py-0.5 rounded border border-border bg-page text-muted">
                       {m.role}
                     </span>
                   </div>
-                  <p className="text-[10px] text-muted mt-0.5">{m.email}</p>
                 </div>
                 {allowedToKick && (
                   <button

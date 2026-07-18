@@ -100,7 +100,7 @@ export function GroupNoticeFeed({ groupId, initialNotices, isOfficer }: Props) {
                       <User size={12} />
                     </div>
                     <span className="text-xs font-medium text-body truncate max-w-[150px] sm:max-w-[250px]">
-                      {notice.profile.full_name || notice.profile.email}
+                      {notice.profile.nickname || notice.profile.full_name || `@${notice.profile.main_account}`}
                     </span>
                   </div>
                   <div className="flex items-center gap-1 text-[10px] text-muted">
