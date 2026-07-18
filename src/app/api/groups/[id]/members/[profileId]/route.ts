@@ -5,7 +5,7 @@ import { isSupabasePlaceholder } from "@shared/supabase-config"
 
 export async function DELETE(
   request: Request,
-  { params }: { params: Promise<{ groupId: string; profileId: string }> }
+  { params }: { params: Promise<{ id: string; profileId: string }> }
 ) {
   if (isSupabasePlaceholder()) {
     return NextResponse.json(
@@ -15,7 +15,7 @@ export async function DELETE(
   }
 
   try {
-    const { groupId, profileId: targetProfileId } = await params
+    const { id: groupId, profileId: targetProfileId } = await params
     const supabase = await createClient()
     const {
       data: { user },
