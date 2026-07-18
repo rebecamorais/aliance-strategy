@@ -23,6 +23,12 @@ export async function AuthHeader() {
             Profile
           </Link>
           <Link
+            href="/dashboard/groups"
+            className="text-xs font-medium rounded-lg border border-border px-3 py-1.5 text-body hover:bg-brand-subtle hover:border-brand-light/30 transition-colors"
+          >
+            My Groups
+          </Link>
+          <Link
             href="/dashboard/explore"
             className="text-xs font-medium rounded-lg border border-border px-3 py-1.5 text-body hover:bg-brand-subtle hover:border-brand-light/30 transition-colors"
           >

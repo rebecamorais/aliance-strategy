@@ -4,6 +4,7 @@ import { isSupabasePlaceholder } from "@shared/supabase-config"
 import { AuthHeader } from "@/frontend/components/auth/auth-header"
 import { GroupNoticeFeed } from "./group-feed"
 import { GroupManagement } from "./group-management"
+import { GroupActions } from "./group-actions"
 import { Shield, ShieldAlert, ArrowLeft, Users, Calendar } from "lucide-react"
 import Link from "next/link"
 import { redirect } from "next/navigation"
@@ -160,6 +161,9 @@ export default async function GroupDetailsPage({
               <ArrowLeft size={12} />
               Back to Explore
             </Link>
+            <div className="border-t border-border/30 pt-4">
+              <GroupActions groupId={groupId} isCreator={userRole === "CREATOR"} />
+            </div>
           </div>
 
           <GroupManagement

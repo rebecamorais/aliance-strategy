@@ -87,3 +87,7 @@ export interface GroupManagementApplication {
   main_account: string
   email: string
 }
+
+export interface MyGroupDetails extends GroupWithMemberCount {
+  role: GroupRole | null
+}

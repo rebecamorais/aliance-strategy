@@ -1,4 +1,4 @@
-import { Group, CreateGroupInput, GroupWithMemberCount, GroupRole, GroupManagementMember, GroupManagementApplication } from "./group.schema"
+import { Group, CreateGroupInput, GroupWithMemberCount, GroupRole, GroupManagementMember, GroupManagementApplication, MyGroupDetails } from "./group.schema"
 import { GroupNotice } from "./group-notice.schema"
 import { GroupLog } from "./group-log.schema"
 
@@ -17,4 +17,7 @@ export interface GroupRepository {
   listGroupLogs(groupId: string): Promise<GroupLog[]>
   listGroupApplications(groupId: string): Promise<GroupManagementApplication[]>
   listGroupMembers(groupId: string): Promise<GroupManagementMember[]>
+  leaveGroup(groupId: string, profileId: string): Promise<void>
+  deleteGroup(groupId: string, profileId: string): Promise<void>
+  listMyGroups(profileId: string): Promise<MyGroupDetails[]>
 }

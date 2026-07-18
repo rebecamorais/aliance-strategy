@@ -1,5 +1,5 @@
 import { GroupRepository } from "@backend/core/entities/group.repository"
-import { Group, CreateGroupInput, GroupWithMemberCount, GroupRole, GroupManagementMember, GroupManagementApplication } from "@backend/core/entities/group.schema"
+import { Group, CreateGroupInput, GroupWithMemberCount, GroupRole, GroupManagementMember, GroupManagementApplication, MyGroupDetails } from "@backend/core/entities/group.schema"
 import { GroupNotice } from "@backend/core/entities/group-notice.schema"
 import { GroupLog, LogAction } from "@backend/core/entities/group-log.schema"
 import { SupabaseClient } from "@supabase/supabase-js"
@@ -491,5 +491,86 @@ export class SupabaseGroupRepository implements GroupRepository {
         email: profile?.email || "",
       }
     })
+  }
+
+  async leaveGroup(groupId: string, profileId: string): Promise<void> {
+    const role = await this.getUserRole(profileId, groupId)
+    if (!role) {
+      throw new Error("You are not a member of this group.")
+    }
+    if (role === "CREATOR") {
+      throw new Error("Creator cannot leave the group. You must delete the group instead.")
+    }
+
+    const { data: profile } = await this.supabase
+      .from("profiles")
+      .select("main_account")
+      .eq("id", profileId)
+      .maybeSingle()
+
+    const { error: deleteError } = await this.supabase
+      .from("group_members")
+      .delete()
+      .eq("group_id", groupId)
+      .eq("profile_id", profileId)
+
+    if (deleteError) {
+      throw new Error(`Failed to leave group: ${deleteError.message}`)
+    }
+
+    const { error: logError } = await this.supabase
+      .from("group_logs")
+      .insert({
+        group_id: groupId,
+        action: "LEFT",
+        target_id: profileId,
+        target_name: profile?.main_account || "Unknown User",
+        actor_id: profileId,
+        actor_name: profile?.main_account || "Unknown User",
+      })
+
+    if (logError) {
+      console.error("Failed to write leave log:", logError.message)
+    }
+  }
+
+  async deleteGroup(groupId: string, profileId: string): Promise<void> {
+    const role = await this.getUserRole(profileId, groupId)
+    if (!role || role !== "CREATOR") {
+      throw new Error("Forbidden: Only the group Creator can delete this group.")
+    }
+
+    const { error } = await this.supabase
+      .from("groups")
+      .delete()
+      .eq("id", groupId)
+
+    if (error) {
+      throw new Error(`Failed to delete group: ${error.message}`)
+    }
+  }
+
+  async listMyGroups(profileId: string): Promise<MyGroupDetails[]> {
+    const allGroups = await this.listAll(profileId)
+    const myGroups = allGroups.filter((g) => g.is_member || g.has_pending_application)
+
+    if (myGroups.length === 0) return []
+
+    const groupIds = myGroups.map((g) => g.id)
+    const { data: memberRoles } = await this.supabase
+      .from("group_members")
+      .select("group_id, role")
+      .eq("profile_id", profileId)
+      .in("group_id", groupIds)
+
+    const roleMap = (memberRoles || []).reduce((acc, curr) => {
+      acc[curr.group_id] = curr.role
+      return acc
+    }, {} as Record<string, string>)
+
+    return myGroups.map((g) => ({
+      ...g,
+      role: (roleMap[g.id] as GroupRole) || null,
+    }))
   }
 }
