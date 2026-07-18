@@ -20,4 +20,5 @@ export interface GroupRepository {
   leaveGroup(groupId: string, profileId: string): Promise<void>
   deleteGroup(groupId: string, profileId: string): Promise<void>
   listMyGroups(profileId: string): Promise<MyGroupDetails[]>
+  deleteNotice(noticeId: string, profileId: string): Promise<void>
 }

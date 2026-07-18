@@ -1,16 +1,17 @@
 "use client"
 
 import { useState, useTransition } from "react"
-import { Send, Calendar, User } from "lucide-react"
+import { Send, Calendar, User, Trash2 } from "lucide-react"
 import type { GroupNotice } from "@backend/core/entities/group-notice.schema"
 
 interface Props {
   groupId: string
   initialNotices: GroupNotice[]
   isOfficer: boolean
+  currentUserId: string
 }
 
-export function GroupNoticeFeed({ groupId, initialNotices, isOfficer }: Props) {
+export function GroupNoticeFeed({ groupId, initialNotices, isOfficer, currentUserId }: Props) {
   const [notices, setNotices] = useState<GroupNotice[]>(initialNotices)
   const [content, setContent] = useState("")
   const [isPending, startTransition] = useTransition()
@@ -44,6 +45,36 @@ export function GroupNoticeFeed({ groupId, initialNotices, isOfficer }: Props) {
           }
         } else {
           setErrorMsg(data.message || "Failed to post notice.")
+        }
+      } catch {
+        setErrorMsg("An unexpected error occurred.")
+      }
+    })
+  }
+
+  const handleDeleteNotice = async (noticeId: string) => {
+    if (!confirm("Are you sure you want to delete this notice?")) return
+
+    setErrorMsg("")
+    setSuccessMsg("")
+
+    startTransition(async () => {
+      try {
+        const res = await fetch(`/api/notices/${noticeId}`, {
+          method: "DELETE",
+        })
+
+        const data = await res.json()
+
+        if (res.ok && data.success) {
+          setSuccessMsg(data.message || "Notice deleted successfully!")
+          const fetchRes = await fetch(`/api/groups/${groupId}/notices`)
+          if (fetchRes.ok) {
+            const updated = await fetchRes.json()
+            setNotices(updated)
+          }
+        } else {
+          setErrorMsg(data.message || "Failed to delete notice.")
         }
       } catch {
         setErrorMsg("An unexpected error occurred.")
@@ -114,9 +145,21 @@ export function GroupNoticeFeed({ groupId, initialNotices, isOfficer }: Props) {
                       )}
                     </span>
                   </div>
-                  <div className="flex items-center gap-1 text-[10px] text-muted">
-                    <Calendar size={10} />
-                    <span>{new Date(notice.createdAt).toLocaleString()}</span>
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-1 text-[10px] text-muted">
+                      <Calendar size={10} />
+                      <span>{new Date(notice.createdAt).toLocaleString()}</span>
+                    </div>
+                    {(isOfficer || notice.profileId === currentUserId) && (
+                      <button
+                        onClick={() => handleDeleteNotice(notice.id)}
+                        disabled={isPending}
+                        className="text-muted hover:text-error hover:bg-error/10 p-1 rounded transition-all cursor-pointer disabled:opacity-50"
+                        title="Delete Announcement"
+                      >
+                        <Trash2 size={12} />
+                      </button>
+                    )}
                   </div>
                 </div>
 

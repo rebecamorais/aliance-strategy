@@ -135,7 +135,7 @@ export default async function GroupDetailsPage({
             </div>
           </div>
 
-          <GroupNoticeFeed groupId={groupId} initialNotices={notices} isOfficer={isOfficer} />
+          <GroupNoticeFeed groupId={groupId} initialNotices={notices} isOfficer={isOfficer} currentUserId={user.id} />
         </div>
 
         {/* Right Side: Group Info Sidebar & Management */}

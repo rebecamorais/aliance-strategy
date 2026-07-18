@@ -579,4 +579,32 @@ export class SupabaseGroupRepository implements GroupRepository {
       role: (roleMap[g.id] as GroupRole) || null,
     }))
   }
+
+  async deleteNotice(noticeId: string, profileId: string): Promise<void> {
+    const { data: notice, error: fetchError } = await this.supabase
+      .from("group_notices")
+      .select("group_id, profile_id")
+      .eq("id", noticeId)
+      .maybeSingle()
+
+    if (fetchError || !notice) {
+      throw new Error("Notice not found.")
+    }
+
+    if (notice.profile_id !== profileId) {
+      const role = await this.getUserRole(profileId, notice.group_id)
+      if (role !== "CREATOR" && role !== "OFFICIAL") {
+        throw new Error("Forbidden: You do not have permission to delete this notice.")
+      }
+    }
+
+    const { error: deleteError } = await this.supabase
+      .from("group_notices")
+      .delete()
+      .eq("id", noticeId)
+
+    if (deleteError) {
+      throw new Error(`Failed to delete notice: ${deleteError.message}`)
+    }
+  }
 }
