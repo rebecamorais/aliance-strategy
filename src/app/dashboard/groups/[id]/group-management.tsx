@@ -10,6 +10,7 @@ interface Member {
   joined_at: string
   main_account: string
   nickname: string | null
+  full_name: string | null
 }
 
 interface Application {
@@ -18,6 +19,7 @@ interface Application {
   created_at: string
   main_account: string
   nickname: string | null
+  full_name: string | null
 }
 
 interface Log {
@@ -212,8 +214,18 @@ export function GroupManagement({
                 <div>
                   <div className="flex items-center gap-2">
                     <span className="text-xs font-medium text-body">
-                      @{m.main_account}
-                      {m.nickname && <span className="text-[10px] text-muted font-normal ml-1.5">({m.nickname})</span>}
+                      {isOfficer ? (
+                        m.nickname ? (
+                          <>
+                            {m.nickname}
+                            <span className="text-[10px] text-muted font-normal ml-1.5">(@{m.main_account})</span>
+                          </>
+                        ) : (
+                          `@${m.main_account}`
+                        )
+                      ) : (
+                        m.nickname || "Member"
+                      )}
                     </span>
                     <span className="text-[9px] font-medium tracking-wide uppercase px-2 py-0.5 rounded border border-border bg-page text-muted">
                       {m.role}

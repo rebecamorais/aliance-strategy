@@ -441,7 +441,8 @@ export class SupabaseGroupRepository implements GroupRepository {
         created_at,
         profiles (
           main_account,
-          nickname
+          nickname,
+          full_name
         )
       `)
       .eq("group_id", groupId)
@@ -453,13 +454,14 @@ export class SupabaseGroupRepository implements GroupRepository {
     }
 
     return (data || []).map((row) => {
-      const profile = row.profiles as unknown as { main_account: string; nickname: string | null } | null
+      const profile = row.profiles as unknown as { main_account: string; nickname: string | null; full_name: string | null } | null
       return {
         id: row.id,
         profile_id: row.profile_id,
         created_at: row.created_at,
         main_account: profile?.main_account || "Unknown User",
         nickname: profile?.nickname || null,
+        full_name: profile?.full_name || null,
       }
     })
   }
@@ -473,7 +475,8 @@ export class SupabaseGroupRepository implements GroupRepository {
         joined_at,
         profiles (
           main_account,
-          nickname
+          nickname,
+          full_name
         )
       `)
       .eq("group_id", groupId)
@@ -484,13 +487,14 @@ export class SupabaseGroupRepository implements GroupRepository {
     }
 
     return (data || []).map((row) => {
-      const profile = row.profiles as unknown as { main_account: string; nickname: string | null } | null
+      const profile = row.profiles as unknown as { main_account: string; nickname: string | null; full_name: string | null } | null
       return {
         profile_id: row.profile_id,
         role: row.role as GroupRole,
         joined_at: row.joined_at,
         main_account: profile?.main_account || "Unknown User",
         nickname: profile?.nickname || null,
+        full_name: profile?.full_name || null,
       }
     })
   }
