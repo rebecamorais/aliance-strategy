@@ -4,7 +4,8 @@ import { createClient } from "@/utils/supabase/server"
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
   const code = searchParams.get("code")
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
+  const requestUrl = new URL(request.url)
+  const origin = requestUrl.origin
 
   if (code) {
     const supabase = await createClient()
@@ -12,10 +13,10 @@ export async function GET(request: Request) {
     
     if (!error) {
       // Successful login. Redirect to internal protected area
-      return NextResponse.redirect(`${siteUrl}/dashboard/profile`)
+      return NextResponse.redirect(`${origin}/dashboard/profile`)
     }
   }
 
   // Authentication failed or code missing
-  return NextResponse.redirect(`${siteUrl}/?error=auth_failed`)
+  return NextResponse.redirect(`${origin}/?error=auth_failed`)
 }

@@ -80,7 +80,7 @@ export default async function ProfilePage() {
 
           <Link
             href="/dashboard/explore"
-            className="w-full flex items-center justify-center gap-2 bg-brand text-page font-medium text-sm py-3 px-6 rounded-xl hover:bg-brand-light active:bg-brand-dark transition-all shadow-md hover:shadow-brand/10 cursor-pointer text-center"
+            className="w-full flex items-center justify-center gap-2 bg-brand text-page font-medium text-sm py-3 px-6 rounded-xl hover:bg-brand-light active:scale-[0.98] transition-all shadow-md hover:shadow-brand/20 cursor-pointer text-center border border-brand-light/20"
           >
             <Search size={16} />
             Search Groups
