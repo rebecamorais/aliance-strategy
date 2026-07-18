@@ -5,7 +5,10 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
   const code = searchParams.get("code")
   const requestUrl = new URL(request.url)
-  const origin = requestUrl.origin
+  let origin = requestUrl.origin
+  if (origin.startsWith("http://") && !origin.includes("localhost") && !origin.includes("127.0.0.1")) {
+    origin = origin.replace("http://", "https://")
+  }
 
   if (code) {
     const supabase = await createClient()
