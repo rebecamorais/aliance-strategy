@@ -1,13 +1,13 @@
-# Design system — guia de cores e tipografia (Dark Mode)
+# Design system — guia de cores e tipografia (Dark Neutral + Violet/Forest)
 
-> Paleta baseada em `#663399` (Rebeca Purple), adaptada para fundo escuro.
+> Fundo neutro escuro (estilo interface do Claude), com **Violet** e **Forest Green** como cores de destaque (realce), não como fundo dominante.
 > Fonte: Plus Jakarta Sans. Stack: Tailwind CSS.
 
 ---
 
 ## tailwind.config.js
 
-Cole dentro de `theme.extend`:
+Cole dentro de `theme.extend` (para referências legadas ou projetos baseados em config.js):
 
 ```js
 fontFamily: {
@@ -25,25 +25,34 @@ fontSize: {
 },
 colors: {
   brand: {
-    DEFAULT: '#A873D9',
-    light:   '#C9A6EC',
-    lighter: '#3D2A5C',
-    subtle:  '#241A38',
-    dark:    '#7A4FB5',
-    darker:  '#563680',
+    DEFAULT: '#9B6DF0',
+    light:   '#B594F5',
+    lighter: '#4A3A6B',
+    subtle:  '#251E38',
+    dark:    '#7C4FE0',
+    darker:  '#5A35A8',
   },
-  page:    '#120D1F',
-  surface: '#1C1530',
-  border:  '#332748',
-  body:    '#F0EAFA',
-  muted:   '#9C93B8',
-  violet:  '#B084E0',
-  indigo:  '#8B84F2',
-  success: '#4CBE8C',
-  warning: '#E0A233',
-  error:   '#E0637F',
+  accent: {
+    DEFAULT: '#3F8F62',
+    light:   '#5FAE7F',
+    lighter: '#274A36',
+    subtle:  '#16241C',
+    dark:    '#2E6B48',
+  },
+  page:     '#1C1C1B',
+  surface:  '#262624',
+  surface2: '#302F2D',
+  border:   '#3D3C39',
+  body:     '#ECEBE8',
+  muted:    '#9B9A94',
+  success: '#4CAE7A',
+  warning: '#D99A3D',
+  error:   '#D65B6E',
 },
 ```
+
+> [!NOTE]
+> Este projeto usa **Tailwind CSS v4**. Os valores acima estão declarados sob o bloco `@theme inline` dentro do arquivo [globals.css](file:///home/rebeca/Github/aliance-strategy/src/frontend/styles/globals.css).
 
 ### Import da fonte (HTML ou CSS global)
 
@@ -51,7 +60,7 @@ colors: {
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500&display=swap" rel="stylesheet">
 ```
 
-Ou no CSS global:
+Ou no CSS global (utilizado em `globals.css`):
 
 ```css
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500&display=swap');
@@ -87,61 +96,79 @@ Plus Jakarta Sans — fonte única do projeto. Não misturar com outras família
 
 ---
 
+## Filosofia da paleta
+
+O fundo é **neutro cinza-escuro** (não roxo, não verde) — igual a interfaces tipo Claude, onde o background nunca briga com o conteúdo. **Violet** e **Forest Green** entram só como realce (ações, links, badges, estados), nunca como cor de fundo em larga escala.
+
+- **Violet** → ação primária (botões principais, links ativos, foco)
+- **Forest Green** → ação secundária / confirmação / destaque alternativo (badges, tags, estados positivos)
+- Os dois nunca competem no mesmo elemento — um é sempre dominante por contexto (ex: botão primário = violet, badge de "concluído" = forest)
+
+---
+
 ## Tokens e uso
 
-### Brand
+### Neutros (fundo — a base de tudo)
 
 | Token | Hex | Uso |
 |---|---|---|
-| `brand` | `#A873D9` | Botões primários, links ativos, ícones de destaque |
-| `brand-light` | `#C9A6EC` | Hover de botões e elementos interativos |
-| `brand-lighter` | `#3D2A5C` | Bordas suaves, chips, badges (sobre fundo escuro) |
-| `brand-subtle` | `#241A38` | Fundo de cards com contexto brand |
-| `brand-dark` | `#7A4FB5` | Estado active/pressed |
-| `brand-darker` | `#563680` | Headings em seções com fundo brand-subtle |
+| `page` | `#1C1C1B` | Fundo da página (`<body>`) — cinza-escuro neutro |
+| `surface` | `#262624` | Cards, modais, inputs, dropdowns |
+| `surface2` | `#302F2D` | Elementos elevados sobre surface (hover, popover, header sticky) |
+| `border` | `#3D3C39` | Divisores e bordas |
+| `body` | `#ECEBE8` | Texto principal |
+| `muted` | `#9B9A94` | Texto secundário, placeholders |
 
-### Neutros
-
-| Token | Hex | Uso |
-|---|---|---|
-| `page` | `#120D1F` | Fundo da página (`<body>`) |
-| `surface` | `#1C1530` | Cards, modais, inputs, dropdowns |
-| `border` | `#332748` | Divisores e bordas |
-| `body` | `#F0EAFA` | Texto principal |
-| `muted` | `#9C93B8` | Texto secundário, placeholders |
-
-### Análogas
+### Brand — Violet (realce primário)
 
 | Token | Hex | Uso |
 |---|---|---|
-| `violet` | `#B084E0` | Destaque alternativo, ilustrações |
-| `indigo` | `#8B84F2` | Links, ícones informativos |
+| `brand` | `#9B6DF0` | Botões primários, links ativos, foco, ícones de destaque |
+| `brand-light` | `#B594F5` | Hover de botões e elementos interativos |
+| `brand-lighter` | `#4A3A6B` | Bordas suaves, chips, badges sobre fundo escuro |
+| `brand-subtle` | `#251E38` | Fundo de cards com contexto brand |
+| `brand-dark` | `#7C4FE0` | Estado active/pressed |
+| `brand-darker` | `#5A35A8` | Headings sobre `brand-subtle` |
+
+### Accent — Forest Green (realce secundário)
+
+| Token | Hex | Uso |
+|---|---|---|
+| `accent` | `#3F8F62` | Ações secundárias, ícones alternativos, tags |
+| `accent-light` | `#5FAE7F` | Hover de elementos accent |
+| `accent-lighter` | `#274A36` | Bordas suaves em contexto accent |
+| `accent-subtle` | `#16241C` | Fundo de cards/badges com contexto accent |
+| `accent-dark` | `#2E6B48` | Estado active/pressed em contexto accent |
 
 ### Funcionais
 
 | Token | Hex | Uso |
 |---|---|---|
-| `success` | `#4CBE8C` | Confirmações, toasts de sucesso |
-| `warning` | `#E0A233` | Alertas e avisos |
-| `error` | `#E0637F` | Erros de formulário, estados destrutivos |
+| `success` | `#4CAE7A` | Confirmações, toasts de sucesso (próximo do accent, mas token separado p/ semântica) |
+| `warning` | `#D99A3D` | Alertas e avisos |
+| `error` | `#D65B6E` | Erros de formulário, estados destrutivos |
+
+> `success` fica intencionalmente próximo de `accent` — ambos são "verdes" — mas são tokens diferentes: `accent` is decorativo/de marca, `success` is semântico de estado. Não substitua um pelo outro.
 
 ---
 
-## Acessibilidade WCAG 2.1
+## Acessibilidade WCAG 2.1 (estimado)
 
-| Combinação | Contraste | Nível |
+| Combinação | Contraste aprox. | Nível |
 |---|---|---|
-| `#A873D9` sobre `#120D1F` | ~6.8:1 | AA + AAA ✓ |
-| `#120D1F` sobre `#A873D9` | ~6.8:1 | AA ✓ |
-| `#A873D9` sobre `#1C1530` | ~6.2:1 | AA + AAA ✓ |
-| `#F0EAFA` sobre `#120D1F` | ~15.8:1 | AA + AAA ✓ |
-| `#9C93B8` sobre `#120D1F` | ~6.1:1 | AA ✓ |
+| `#9B6DF0` (brand) sobre `#1C1C1B` (page) | ~7.0:1 | AA + AAA ✓ |
+| `#3F8F62` (accent) sobre `#1C1C1B` (page) | ~4.7:1 | AA ✓ (texto normal) |
+| `#ECEBE8` (body) sobre `#1C1C1B` (page) | ~14.5:1 | AA + AAA ✓ |
+| `#9B9A94` (muted) sobre `#1C1C1B` (page) | ~6.2:1 | AA ✓ |
+| `#1C1C1B` sobre `#9B6DF0` (texto em botão brand) | ~7.0:1 | AA + AAA ✓ |
+
+> `accent` sobre `page` fica na faixa AA — evite usar em texto pequeno (abaixo de 13px); prefira `accent-light` (`#5FAE7F`) se precisar de texto fino sobre fundo escuro.
 
 ---
 
 ## Componentes de referência
 
-### Botão primário
+### Botão primário (Violet)
 ```html
 <button class="bg-brand text-page px-4 py-2 rounded-lg
                hover:bg-brand-light active:bg-brand-dark transition-colors">
@@ -149,10 +176,18 @@ Plus Jakarta Sans — fonte única do projeto. Não misturar com outras família
 </button>
 ```
 
-### Botão outline
+### Botão secundário (Forest Green)
 ```html
-<button class="border border-brand text-brand px-4 py-2 rounded-lg
-               hover:bg-brand-subtle transition-colors">
+<button class="bg-accent text-page px-4 py-2 rounded-lg
+               hover:bg-accent-light active:bg-accent-dark transition-colors">
+  Aprovar
+</button>
+```
+
+### Botão outline (neutro, com foco violet)
+```html
+<button class="border border-border text-body px-4 py-2 rounded-lg
+               hover:bg-surface2 focus:ring-2 focus:ring-brand/40 transition-colors">
   Cancelar
 </button>
 ```
@@ -165,10 +200,17 @@ Plus Jakarta Sans — fonte única do projeto. Não misturar com outras família
 </div>
 ```
 
-### Badge
+### Badge — Violet
 ```html
 <span class="bg-brand-subtle text-brand-light text-xs font-medium px-3 py-1 rounded-full">
   Novo
+</span>
+```
+
+### Badge — Forest Green
+```html
+<span class="bg-accent-subtle text-accent-light text-xs font-medium px-3 py-1 rounded-full">
+  Concluído
 </span>
 ```
 
@@ -188,11 +230,13 @@ Plus Jakarta Sans — fonte única do projeto. Não misturar com outras família
 
 ## Regras rápidas
 
-- Texto principal → sempre `text-body`, nunca `text-white` ou `text-gray-100`
+- Fundo de página → sempre `bg-page` (cinza-escuro neutro, nunca violet nem verde)
+- Fundo de card → `bg-surface`; elementos elevados sobre card → `bg-surface2`
+- Texto principal → sempre `text-body`, nunca `text-white`
 - Texto secundário → sempre `text-muted`, nunca `text-gray-400`
-- Fundo de página → sempre `bg-page`
-- Fundo de card → sempre `bg-surface`
 - Bordas → sempre `border-border`
-- Botões primários usam `text-page` (não branco puro) para manter o contraste calibrado sobre `brand`
-- Nunca usar cores nativas do Tailwind (`gray`, `purple`, `violet`) — usar apenas os tokens acima
-- Nunca usar cores arbitrárias como `text-[#A873D9]`
+- **Violet é a cor de ação primária.** Use em botões principais, links, foco
+- **Forest Green é realce secundário.** Use em ações alternativas, badges de sucesso/concluído, tags — nunca no mesmo botão que já usa violet
+- Nunca colocar `bg-brand` and `bg-accent` lado a lado competindo pela mesma hierarquia visual (ex: dois botões de mesmo peso, cores diferentes, na mesma ação) — escolha um por vez
+- Nunca usar cores nativas do Tailwind (`gray`, `purple`, `green`) — usar apenas os tokens acima
+- Nunca usar cores arbitrárias como `text-[#9B6DF0]`

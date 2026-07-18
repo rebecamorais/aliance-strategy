@@ -8,7 +8,7 @@ export default function RegisterPage() {
       title="Criar conta"
       description="Registre-se com e-mail e senha. Um perfil será criado automaticamente."
       footer={
-        <Link href="/" className="text-indigo hover:text-brand">
+        <Link href="/" className="text-brand hover:text-brand-light">
           ← Voltar ao início
         </Link>
       }

@@ -40,7 +40,7 @@ export default async function MyGroupsPage() {
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/logo.png" alt="AStrategy" className="w-10 h-10 object-contain" />
             <div>
-              <h1 className="text-base font-medium tracking-tight bg-gradient-to-r from-brand to-violet bg-clip-text text-transparent">
+              <h1 className="text-base font-medium tracking-tight bg-gradient-to-r from-brand to-brand-light bg-clip-text text-transparent">
                 AStrategy
               </h1>
               <p className="text-[10px] text-muted font-medium tracking-wider uppercase">
@@ -137,7 +137,7 @@ export default async function MyGroupsPage() {
                       key={group.id}
                       className="bg-surface border border-border rounded-xl p-5 shadow-lg flex flex-col justify-between gap-4 relative overflow-hidden"
                     >
-                      <div className="absolute top-0 left-0 right-0 h-1 bg-violet" />
+                      <div className="absolute top-0 left-0 right-0 h-1 bg-brand" />
                       <div className="space-y-2">
                         <div className="flex items-center justify-between gap-2">
                           <h4 className="text-sm font-medium text-body truncate">{group.name}</h4>

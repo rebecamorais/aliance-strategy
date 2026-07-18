@@ -46,7 +46,7 @@ export default async function GroupDetailsPage({
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src="/logo.png" alt="AStrategy" className="w-10 h-10 object-contain" />
               <div>
-                <h1 className="text-base font-medium tracking-tight bg-gradient-to-r from-brand to-violet bg-clip-text text-transparent">
+                <h1 className="text-base font-medium tracking-tight bg-gradient-to-r from-brand to-brand-light bg-clip-text text-transparent">
                   AStrategy
                 </h1>
                 <p className="text-[10px] text-muted font-medium tracking-wider uppercase">
@@ -104,7 +104,7 @@ export default async function GroupDetailsPage({
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/logo.png" alt="AStrategy" className="w-10 h-10 object-contain" />
             <div>
-              <h1 className="text-base font-medium tracking-tight bg-gradient-to-r from-brand to-violet bg-clip-text text-transparent">
+              <h1 className="text-base font-medium tracking-tight bg-gradient-to-r from-brand to-brand-light bg-clip-text text-transparent">
                 AStrategy
               </h1>
               <p className="text-[10px] text-muted font-medium tracking-wider uppercase">
@@ -122,7 +122,7 @@ export default async function GroupDetailsPage({
         {/* Left Side: Notice Feed */}
         <div className="flex-1 space-y-6">
           <div className="bg-surface border border-border rounded-2xl p-6 shadow-xl relative overflow-hidden">
-            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-brand to-violet" />
+            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-brand to-brand-light" />
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
               <div>
                 <h1 className="text-2xl font-medium text-body tracking-tight leading-none mb-2">
@@ -143,9 +143,9 @@ export default async function GroupDetailsPage({
           <div className="flex border-b border-border/30 mb-6 bg-surface/20 rounded-t-xl px-2">
             <Link
               href={`/dashboard/groups/${groupId}?tab=mural`}
-              className={`px-5 py-3 text-xs font-semibold border-b-2 transition-all cursor-pointer ${
+              className={`px-5 py-3 text-xs font-medium border-b-2 transition-all cursor-pointer ${
                 tab !== "calendar"
-                  ? "border-brand text-brand-light font-bold bg-brand-subtle/5"
+                  ? "border-brand text-brand-light bg-brand-subtle/5"
                   : "border-transparent text-muted hover:text-body"
               }`}
             >
@@ -153,9 +153,9 @@ export default async function GroupDetailsPage({
             </Link>
             <Link
               href={`/dashboard/groups/${groupId}?tab=calendar`}
-              className={`px-5 py-3 text-xs font-semibold border-b-2 transition-all cursor-pointer ${
+              className={`px-5 py-3 text-xs font-medium border-b-2 transition-all cursor-pointer ${
                 tab === "calendar"
-                  ? "border-brand text-brand-light font-bold bg-brand-subtle/5"
+                  ? "border-brand text-brand-light bg-brand-subtle/5"
                   : "border-transparent text-muted hover:text-body"
               }`}
             >

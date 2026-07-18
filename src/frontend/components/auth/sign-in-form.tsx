@@ -79,7 +79,7 @@ export function SignInForm({ callbackError }: { callbackError?: boolean }) {
 
       <p className="text-center text-sm font-normal text-muted">
         Ainda não tem conta?{" "}
-        <Link href="/auth/register" className="text-indigo hover:text-brand">
+        <Link href="/auth/register" className="text-brand hover:text-brand-light">
           Criar conta
         </Link>
       </p>

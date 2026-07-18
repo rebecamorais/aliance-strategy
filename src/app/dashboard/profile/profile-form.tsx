@@ -50,7 +50,7 @@ export function ProfileForm({
 
   return (
     <div className="bg-surface border border-border rounded-2xl p-8 max-w-sm w-full shadow-2xl relative overflow-hidden flex flex-col items-center">
-      <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-brand to-violet" />
+      <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-brand to-brand-light" />
 
       <div className="relative mb-6 mt-2">
         {avatarUrl ? (

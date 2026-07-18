@@ -54,7 +54,7 @@ export function NewGroupForm() {
         </div>
         <Link
           href="/dashboard/explore"
-          className="text-xs font-medium text-indigo hover:text-brand-light transition-colors"
+          className="text-xs font-medium text-brand hover:text-brand-light transition-colors"
         >
           ← Back to Explore
         </Link>

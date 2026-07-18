@@ -35,7 +35,7 @@ export default async function ExplorePage() {
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/logo.png" alt="AStrategy" className="w-10 h-10 object-contain" />
             <div>
-              <h1 className="text-base font-medium tracking-tight bg-gradient-to-r from-brand to-violet bg-clip-text text-transparent">
+              <h1 className="text-base font-medium tracking-tight bg-gradient-to-r from-brand to-brand-light bg-clip-text text-transparent">
                 AStrategy
               </h1>
               <p className="text-[10px] text-muted font-medium tracking-wider uppercase">

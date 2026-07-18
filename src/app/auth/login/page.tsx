@@ -15,7 +15,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
       title="Entrar na sua conta"
       description="Use o e-mail e a senha cadastrados no Supabase Auth."
       footer={
-        <Link href="/" className="text-indigo hover:text-brand">
+        <Link href="/" className="text-brand hover:text-brand-light">
           ← Voltar ao início
         </Link>
       }

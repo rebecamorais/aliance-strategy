@@ -248,7 +248,7 @@ export function GroupCalendar({ groupId, isOfficer, currentUserId }: Props) {
             </button>
             <button
               onClick={() => setSelectedDate(new Date())}
-              className="px-3.5 py-1 text-xs font-semibold text-body hover:bg-surface rounded-lg transition-all cursor-pointer"
+              className="px-3.5 py-1 text-xs font-medium text-body hover:bg-surface rounded-lg transition-all cursor-pointer"
             >
               Today
             </button>
@@ -260,7 +260,7 @@ export function GroupCalendar({ groupId, isOfficer, currentUserId }: Props) {
             </button>
           </div>
 
-          <h2 className="text-sm font-semibold text-body tracking-tight min-w-[130px] text-center sm:text-left">
+          <h2 className="text-sm font-medium text-body tracking-tight min-w-[130px] text-center sm:text-left">
             {currentHorizon === "year" && selectedDate.getFullYear()}
             {currentHorizon === "month" &&
               selectedDate.toLocaleString("default", { month: "long", year: "numeric" })}
@@ -278,7 +278,7 @@ export function GroupCalendar({ groupId, isOfficer, currentUserId }: Props) {
               <button
                 key={horizon}
                 onClick={() => setCurrentHorizon(horizon)}
-                className={`px-3 py-1.5 text-xs font-semibold rounded-lg capitalize transition-all cursor-pointer ${
+                className={`px-3 py-1.5 text-xs font-medium rounded-lg capitalize transition-all cursor-pointer ${
                   currentHorizon === horizon
                     ? "bg-brand text-page shadow-md"
                     : "text-muted hover:text-body"
@@ -293,7 +293,7 @@ export function GroupCalendar({ groupId, isOfficer, currentUserId }: Props) {
           {isOfficer && (
             <button
               onClick={openNewEventModal}
-              className="flex items-center gap-1.5 bg-brand-subtle border border-brand/20 text-brand-light font-semibold text-xs py-2 px-3.5 rounded-xl hover:bg-brand-lighter/20 hover:border-brand-light/30 active:scale-[0.98] transition-all cursor-pointer"
+              className="flex items-center gap-1.5 bg-brand-subtle border border-brand/20 text-brand-light font-medium text-xs py-2 px-3.5 rounded-xl hover:bg-brand-lighter/20 hover:border-brand-light/30 active:scale-[0.98] transition-all cursor-pointer"
             >
               <Plus size={14} />
               Add Event
@@ -314,7 +314,7 @@ export function GroupCalendar({ groupId, isOfficer, currentUserId }: Props) {
         {currentHorizon === "month" && (
           <div className="grid grid-cols-7 gap-px bg-border/20 rounded-xl overflow-hidden">
             {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((dayName) => (
-              <div key={dayName} className="bg-page py-2.5 text-center text-[10px] font-semibold tracking-wider text-muted uppercase">
+              <div key={dayName} className="bg-page py-2.5 text-center text-[10px] font-medium tracking-wider text-muted uppercase">
                 {dayName}
               </div>
             ))}
@@ -331,7 +331,7 @@ export function GroupCalendar({ groupId, isOfficer, currentUserId }: Props) {
                 >
                   <div className="flex justify-end mb-1.5">
                     <span
-                      className={`text-xs font-bold leading-none w-5 h-5 flex items-center justify-center rounded-full ${
+                      className={`text-xs font-medium leading-none w-5 h-5 flex items-center justify-center rounded-full ${
                         isToday ? "bg-brand text-page shadow-md" : "text-muted"
                       }`}
                     >
@@ -355,7 +355,7 @@ export function GroupCalendar({ groupId, isOfficer, currentUserId }: Props) {
                           setSelectedDate(date)
                           setCurrentHorizon("day")
                         }}
-                        className="text-[9px] text-muted hover:text-body text-center font-semibold pt-0.5 cursor-pointer"
+                        className="text-[9px] text-muted hover:text-body text-center font-medium pt-0.5 cursor-pointer"
                       >
                         +{dayEvents.length - 3} more
                       </button>
@@ -371,7 +371,7 @@ export function GroupCalendar({ groupId, isOfficer, currentUserId }: Props) {
         {currentHorizon === "week" && (
           <div className="flex flex-col rounded-xl overflow-hidden bg-page">
             <div className="grid grid-cols-8 border-b border-border/30 bg-surface/50">
-              <div className="border-r border-border/30 py-3 text-center text-[10px] font-semibold text-muted uppercase">Hour</div>
+              <div className="border-r border-border/30 py-3 text-center text-[10px] font-medium text-muted uppercase">Hour</div>
               {getWeekViewDays().map((date, idx) => {
                 const isToday = new Date().toDateString() === date.toDateString()
                 return (
@@ -379,11 +379,11 @@ export function GroupCalendar({ groupId, isOfficer, currentUserId }: Props) {
                     key={idx}
                     className={`py-2 text-center border-r border-border/20 last:border-0 ${isToday ? "bg-brand-subtle/10" : ""}`}
                   >
-                    <p className="text-[10px] font-semibold text-muted uppercase">
+                    <p className="text-[10px] font-medium text-muted uppercase">
                       {date.toLocaleDateString(undefined, { weekday: "short" })}
                     </p>
                     <p
-                      className={`text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full mx-auto mt-0.5 ${
+                      className={`text-xs font-medium w-5 h-5 flex items-center justify-center rounded-full mx-auto mt-0.5 ${
                         isToday ? "bg-brand text-page shadow-sm" : "text-body"
                       }`}
                     >
@@ -398,7 +398,7 @@ export function GroupCalendar({ groupId, isOfficer, currentUserId }: Props) {
               {/* Hour Labels */}
               <div className="w-1/8 border-r border-border/30 bg-surface/10 divide-y divide-border/20 flex flex-col">
                 {Array.from({ length: 24 }).map((_, hour) => (
-                  <div key={hour} className="h-16 flex items-start justify-center pr-2 pt-1 text-[9px] font-semibold text-muted">
+                  <div key={hour} className="h-16 flex items-start justify-center pr-2 pt-1 text-[9px] font-medium text-muted">
                     {hour.toString().padStart(2, "0")}:00
                   </div>
                 ))}
@@ -422,7 +422,7 @@ export function GroupCalendar({ groupId, isOfficer, currentUserId }: Props) {
                         <button
                           key={e.id}
                           onClick={() => setSelectedEvent(e)}
-                          className="absolute left-1 right-1 bg-brand text-page text-[9px] font-semibold px-1.5 py-1 rounded shadow truncate z-10 cursor-pointer"
+                          className="absolute left-1 right-1 bg-brand text-page text-[9px] font-medium px-1.5 py-1 rounded shadow truncate z-10 cursor-pointer"
                           style={{ top: "4px" }}
                         >
                           [All Day] {e.title}
@@ -447,7 +447,7 @@ export function GroupCalendar({ groupId, isOfficer, currentUserId }: Props) {
                             style={{ top: `${topOffset}px`, height: `${height}px` }}
                           >
                             <div>
-                              <p className="text-[9px] font-bold tracking-tight truncate leading-tight mb-0.5">{e.title}</p>
+                              <p className="text-[9px] font-medium tracking-tight truncate leading-tight mb-0.5">{e.title}</p>
                               {duration >= 1 && <p className="text-[8px] opacity-75 truncate leading-none">{e.description}</p>}
                             </div>
                             {duration >= 0.75 && (
@@ -474,7 +474,7 @@ export function GroupCalendar({ groupId, isOfficer, currentUserId }: Props) {
               {/* Hour Labels */}
               <div className="w-16 border-r border-border/30 bg-surface/10 divide-y divide-border/20 flex flex-col">
                 {Array.from({ length: 24 }).map((_, hour) => (
-                  <div key={hour} className="h-16 flex items-start justify-center pr-2.5 pt-1.5 text-[10px] font-semibold text-muted">
+                  <div key={hour} className="h-16 flex items-start justify-center pr-2.5 pt-1.5 text-[10px] font-medium text-muted">
                     {hour.toString().padStart(2, "0")}:00
                   </div>
                 ))}
@@ -511,7 +511,7 @@ export function GroupCalendar({ groupId, isOfficer, currentUserId }: Props) {
                         style={{ top: `${e.isAllDay ? 4 : topOffset}px`, height: `${e.isAllDay ? 40 : height}px` }}
                       >
                         <div className="flex items-start justify-between gap-4">
-                          <p className="text-[11px] font-bold tracking-tight truncate leading-tight">{e.title}</p>
+                          <p className="text-[11px] font-medium tracking-tight truncate leading-tight">{e.title}</p>
                           <span className="text-[9px] opacity-75 shrink-0 flex items-center gap-1 leading-none font-medium">
                             <Clock size={10} />
                             {e.isAllDay
@@ -539,14 +539,14 @@ export function GroupCalendar({ groupId, isOfficer, currentUserId }: Props) {
 
               return (
                 <div key={monthIdx} className="bg-surface/50 border border-border/30 rounded-xl p-4 flex flex-col shadow-md">
-                  <h3 className="text-xs font-bold text-body tracking-wider uppercase border-b border-border/20 pb-1.5 mb-2 text-center">
+                  <h3 className="text-xs font-medium text-body tracking-wider uppercase border-b border-border/20 pb-1.5 mb-2 text-center">
                     {tempDate.toLocaleString("default", { month: "long" })}
                   </h3>
 
                   <div className="grid grid-cols-7 gap-y-1.5 text-center">
                     {/* Month Days Header */}
                     {["S", "M", "T", "W", "T", "F", "S"].map((d, i) => (
-                      <span key={i} className="text-[8px] font-bold text-muted uppercase">
+                      <span key={i} className="text-[8px] font-medium text-muted uppercase">
                         {d}
                       </span>
                     ))}
@@ -569,7 +569,7 @@ export function GroupCalendar({ groupId, isOfficer, currentUserId }: Props) {
                             setSelectedDate(date)
                             setCurrentHorizon("day")
                           }}
-                          className={`text-[9px] font-bold w-5 h-5 flex items-center justify-center rounded-full mx-auto relative cursor-pointer hover:bg-brand hover:text-page transition-all ${
+                          className={`text-[9px] font-medium w-5 h-5 flex items-center justify-center rounded-full mx-auto relative cursor-pointer hover:bg-brand hover:text-page transition-all ${
                             hasEvents
                               ? dayEvents.length >= 3
                                 ? "bg-brand text-page shadow"
@@ -605,7 +605,7 @@ export function GroupCalendar({ groupId, isOfficer, currentUserId }: Props) {
                 <CalendarIcon size={16} />
               </div>
               <div>
-                <h3 className="text-sm font-semibold text-body">New Calendar Event</h3>
+                <h3 className="text-sm font-medium text-body">New Calendar Event</h3>
                 <p className="text-[10px] text-muted">Add a coordination benchmark or meeting</p>
               </div>
             </div>
@@ -701,7 +701,7 @@ export function GroupCalendar({ groupId, isOfficer, currentUserId }: Props) {
               </div>
 
               {formError && (
-                <div className="p-2.5 bg-error/10 border border-error/20 rounded-lg text-[10px] text-error font-semibold">
+                <div className="p-2.5 bg-error/10 border border-error/20 rounded-lg text-[10px] text-error font-medium">
                   {formError}
                 </div>
               )}
@@ -710,14 +710,14 @@ export function GroupCalendar({ groupId, isOfficer, currentUserId }: Props) {
                 <button
                   type="button"
                   onClick={() => setShowAddModal(false)}
-                  className="px-4 py-2 bg-page border border-border text-muted font-semibold text-xs rounded-xl hover:bg-surface/50 transition-all cursor-pointer"
+                  className="px-4 py-2 bg-page border border-border text-muted font-medium text-xs rounded-xl hover:bg-surface/50 transition-all cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isPending}
-                  className="bg-brand text-page font-semibold text-xs px-5 py-2 rounded-xl hover:bg-brand-light active:scale-[0.98] transition-all cursor-pointer disabled:opacity-50"
+                  className="bg-brand text-page font-medium text-xs px-5 py-2 rounded-xl hover:bg-brand-light active:scale-[0.98] transition-all cursor-pointer disabled:opacity-50"
                 >
                   {isPending ? "Creating..." : "Create Event"}
                 </button>
@@ -742,7 +742,7 @@ export function GroupCalendar({ groupId, isOfficer, currentUserId }: Props) {
               <div className="w-8 h-8 rounded-lg bg-brand-subtle flex items-center justify-center text-brand-light">
                 <CalendarIcon size={16} />
               </div>
-              <h3 className="text-sm font-semibold text-body truncate max-w-[320px]">{selectedEvent.title}</h3>
+              <h3 className="text-sm font-medium text-body truncate max-w-[320px]">{selectedEvent.title}</h3>
             </div>
 
             <div className="space-y-4">
@@ -757,7 +757,7 @@ export function GroupCalendar({ groupId, isOfficer, currentUserId }: Props) {
                 <Clock size={14} className="text-muted shrink-0" />
                 <div className="text-xs text-body">
                   {selectedEvent.isAllDay ? (
-                    <span className="font-semibold text-brand-light bg-brand-subtle/50 px-2 py-0.5 rounded border border-brand-light/10">All Day Event</span>
+                    <span className="font-medium text-brand-light bg-brand-subtle/50 px-2 py-0.5 rounded border border-brand-light/10">All Day Event</span>
                   ) : (
                     <div className="flex flex-col gap-0.5">
                       <p>
@@ -777,7 +777,7 @@ export function GroupCalendar({ groupId, isOfficer, currentUserId }: Props) {
               <div className="flex justify-end gap-3 pt-4 border-t border-border/30 mt-6">
                 <button
                   onClick={() => setSelectedEvent(null)}
-                  className="px-4 py-2 bg-page border border-border text-muted font-semibold text-xs rounded-xl hover:bg-surface/50 transition-all cursor-pointer"
+                  className="px-4 py-2 bg-page border border-border text-muted font-medium text-xs rounded-xl hover:bg-surface/50 transition-all cursor-pointer"
                 >
                   Close
                 </button>
@@ -785,7 +785,7 @@ export function GroupCalendar({ groupId, isOfficer, currentUserId }: Props) {
                   <button
                     onClick={() => handleDeleteEvent(selectedEvent.id)}
                     disabled={isPending}
-                    className="flex items-center gap-1.5 border border-error/20 bg-error/10 text-error font-semibold text-xs py-2 px-4 rounded-xl hover:bg-error/20 active:scale-[0.98] transition-all cursor-pointer disabled:opacity-50"
+                    className="flex items-center gap-1.5 border border-error/20 bg-error/10 text-error font-medium text-xs py-2 px-4 rounded-xl hover:bg-error/20 active:scale-[0.98] transition-all cursor-pointer disabled:opacity-50"
                   >
                     <Trash2 size={12} />
                     Delete Event

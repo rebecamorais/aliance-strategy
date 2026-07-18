@@ -12,7 +12,7 @@ export function AuthCard({ title, description, children, footer }: AuthCardProps
     <div className="min-h-screen bg-page text-body flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-md">
         <div className="mb-8 text-center">
-          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-brand to-violet text-lg font-medium text-white shadow-md shadow-brand/20">
+          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-brand to-brand-light text-lg font-medium text-page shadow-md shadow-brand/20">
             F
           </div>
           <h1 className="text-2xl font-medium tracking-tight text-body">{title}</h1>
