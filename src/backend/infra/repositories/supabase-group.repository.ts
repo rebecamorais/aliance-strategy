@@ -1,6 +1,7 @@
 import { GroupRepository } from "@backend/core/entities/group.repository"
-import { Group, CreateGroupInput, GroupWithMemberCount, GroupRole } from "@backend/core/entities/group.schema"
+import { Group, CreateGroupInput, GroupWithMemberCount, GroupRole, GroupManagementMember, GroupManagementApplication } from "@backend/core/entities/group.schema"
 import { GroupNotice } from "@backend/core/entities/group-notice.schema"
+import { GroupLog, LogAction } from "@backend/core/entities/group-log.schema"
 import { SupabaseClient } from "@supabase/supabase-js"
 import { Database } from "@backend/infra/supabase/types"
 
@@ -85,6 +86,27 @@ export class SupabaseGroupRepository implements GroupRepository {
 
     if (error) {
       throw new Error(`Failed to apply to group: ${error.message}`)
+    }
+
+    const { data: profile } = await this.supabase
+      .from("profiles")
+      .select("main_account")
+      .eq("id", profileId)
+      .maybeSingle()
+
+    const { error: logError } = await this.supabase
+      .from("group_logs")
+      .insert({
+        group_id: groupId,
+        action: "APPLIED",
+        target_id: profileId,
+        target_name: profile?.main_account || "Unknown User",
+        actor_id: profileId,
+        actor_name: profile?.main_account || "Unknown User",
+      })
+
+    if (logError) {
+      console.error("Failed to write application log:", logError.message)
     }
   }
 
@@ -235,5 +257,239 @@ export class SupabaseGroupRepository implements GroupRepository {
       created_at: data.created_at,
       updated_at: data.updated_at,
     }
+  }
+
+  async handleApplication(applicationId: string, accept: boolean, actorProfileId: string): Promise<string> {
+    const { data: app, error: appError } = await this.supabase
+      .from("applications")
+      .select(`
+        *,
+        profiles (
+          main_account
+        )
+      `)
+      .eq("id", applicationId)
+      .maybeSingle()
+
+    if (appError || !app) {
+      throw new Error("Application not found.")
+    }
+
+    const groupId = app.group_id
+    const targetProfileId = app.profile_id
+    const candidateProfile = app.profiles as unknown as { main_account: string } | null
+    const targetName = candidateProfile?.main_account || "Unknown User"
+
+    const { data: actorMember, error: roleError } = await this.supabase
+      .from("group_members")
+      .select("role")
+      .eq("profile_id", actorProfileId)
+      .eq("group_id", groupId)
+      .maybeSingle()
+
+    if (roleError || !actorMember || (actorMember.role !== "CREATOR" && actorMember.role !== "OFFICIAL")) {
+      throw new Error("Forbidden: You do not have officer permissions in this group.")
+    }
+
+    const { data: actorProfile } = await this.supabase
+      .from("profiles")
+      .select("main_account")
+      .eq("id", actorProfileId)
+      .maybeSingle()
+
+    if (accept) {
+      const { error: insertError } = await this.supabase
+        .from("group_members")
+        .insert({
+          group_id: groupId,
+          profile_id: targetProfileId,
+          role: "MEMBER",
+        })
+
+      if (insertError) {
+        throw new Error(`Failed to add group member: ${insertError.message}`)
+      }
+    }
+
+    const { error: deleteError } = await this.supabase
+      .from("applications")
+      .delete()
+      .eq("id", applicationId)
+
+    if (deleteError) {
+      throw new Error(`Failed to clear application: ${deleteError.message}`)
+    }
+
+    const { error: logError } = await this.supabase
+      .from("group_logs")
+      .insert({
+        group_id: groupId,
+        action: accept ? "ACCEPTED" : "REJECTED",
+        target_id: targetProfileId,
+        target_name: targetName,
+        actor_id: actorProfileId,
+        actor_name: actorProfile?.main_account || "Unknown Officer",
+      })
+
+    if (logError) {
+      console.error("Failed to write audit log:", logError.message)
+    }
+
+    return groupId
+  }
+
+  async removeMember(groupId: string, targetProfileId: string, actorProfileId: string): Promise<void> {
+    const [actorRes, targetRes] = await Promise.all([
+      this.supabase
+        .from("group_members")
+        .select("role")
+        .eq("profile_id", actorProfileId)
+        .eq("group_id", groupId)
+        .maybeSingle(),
+      this.supabase
+        .from("group_members")
+        .select(`
+          role,
+          profiles (
+            main_account
+          )
+        `)
+        .eq("profile_id", targetProfileId)
+        .eq("group_id", groupId)
+        .maybeSingle(),
+    ])
+
+    if (actorRes.error || !actorRes.data || targetRes.error || !targetRes.data) {
+      throw new Error("Invalid member or group relation.")
+    }
+
+    const actorRole = actorRes.data.role
+    const targetRole = targetRes.data.role
+    const targetProfile = targetRes.data.profiles as unknown as { main_account: string } | null
+    const targetName = targetProfile?.main_account || "Member"
+
+    if (actorRole === "MEMBER") {
+      throw new Error("Forbidden: Access Denied.")
+    }
+    if (actorRole === "OFFICIAL" && (targetRole === "CREATOR" || targetRole === "OFFICIAL")) {
+      throw new Error("Forbidden: Officers cannot remove other Officers or the group Creator.")
+    }
+
+    const { data: actorProfile } = await this.supabase
+      .from("profiles")
+      .select("main_account")
+      .eq("id", actorProfileId)
+      .maybeSingle()
+
+    const { error: deleteError } = await this.supabase
+      .from("group_members")
+      .delete()
+      .eq("profile_id", targetProfileId)
+      .eq("group_id", groupId)
+
+    if (deleteError) {
+      throw new Error(`Failed to remove member: ${deleteError.message}`)
+    }
+
+    const { error: logError } = await this.supabase
+      .from("group_logs")
+      .insert({
+        group_id: groupId,
+        action: "REMOVED",
+        target_id: targetProfileId,
+        target_name: targetName,
+        actor_id: actorProfileId,
+        actor_name: actorProfile?.main_account || "Unknown Officer",
+      })
+
+    if (logError) {
+      console.error("Failed to write removal log:", logError.message)
+    }
+  }
+
+  async listGroupLogs(groupId: string): Promise<GroupLog[]> {
+    const { data, error } = await this.supabase
+      .from("group_logs")
+      .select("*")
+      .eq("group_id", groupId)
+      .order("created_at", { ascending: false })
+
+    if (error) {
+      throw new Error(`Failed to fetch audit logs: ${error.message}`)
+    }
+
+    return (data || []).map((row) => ({
+      id: row.id,
+      groupId: row.group_id,
+      action: row.action as LogAction,
+      targetId: row.target_id,
+      targetName: row.target_name,
+      actorId: row.actor_id,
+      actorName: row.actor_name,
+      createdAt: row.created_at,
+    }))
+  }
+
+  async listGroupApplications(groupId: string): Promise<GroupManagementApplication[]> {
+    const { data, error } = await this.supabase
+      .from("applications")
+      .select(`
+        id,
+        profile_id,
+        created_at,
+        profiles (
+          main_account,
+          email
+        )
+      `)
+      .eq("group_id", groupId)
+      .eq("status", "PENDING")
+      .order("created_at", { ascending: false })
+
+    if (error) {
+      throw new Error(`Failed to list group applications: ${error.message}`)
+    }
+
+    return (data || []).map((row) => {
+      const profile = row.profiles as unknown as { main_account: string; email: string } | null
+      return {
+        id: row.id,
+        profile_id: row.profile_id,
+        created_at: row.created_at,
+        main_account: profile?.main_account || "Unknown User",
+        email: profile?.email || "",
+      }
+    })
+  }
+
+  async listGroupMembers(groupId: string): Promise<GroupManagementMember[]> {
+    const { data, error } = await this.supabase
+      .from("group_members")
+      .select(`
+        profile_id,
+        role,
+        joined_at,
+        profiles (
+          main_account,
+          email
+        )
+      `)
+      .eq("group_id", groupId)
+      .order("joined_at", { ascending: true })
+
+    if (error) {
+      throw new Error(`Failed to list group members: ${error.message}`)
+    }
+
+    return (data || []).map((row) => {
+      const profile = row.profiles as unknown as { main_account: string; email: string } | null
+      return {
+        profile_id: row.profile_id,
+        role: row.role as GroupRole,
+        joined_at: row.joined_at,
+        main_account: profile?.main_account || "Unknown User",
+        email: profile?.email || "",
+      }
+    })
   }
 }

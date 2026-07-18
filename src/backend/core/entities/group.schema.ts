@@ -71,3 +71,19 @@ export interface GroupDetails extends Group {
     }
   }>
 }
+
+export interface GroupManagementMember {
+  profile_id: string
+  role: GroupRole
+  joined_at: string
+  main_account: string
+  email: string
+}
+
+export interface GroupManagementApplication {
+  id: string
+  profile_id: string
+  created_at: string
+  main_account: string
+  email: string
+}

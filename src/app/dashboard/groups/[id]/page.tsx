@@ -3,6 +3,7 @@ import { SupabaseGroupRepository } from "@backend/infra/repositories/supabase-gr
 import { isSupabasePlaceholder } from "@shared/supabase-config"
 import { AuthHeader } from "@/frontend/components/auth/auth-header"
 import { GroupNoticeFeed } from "./group-feed"
+import { GroupManagement } from "./group-management"
 import { Shield, ShieldAlert, ArrowLeft, Users, Calendar } from "lucide-react"
 import Link from "next/link"
 import { redirect } from "next/navigation"
@@ -86,6 +87,9 @@ export default async function GroupDetailsPage({
   const userRole = await repository.getUserRole(user.id, groupId)
   const isOfficer = userRole === "CREATOR" || userRole === "OFFICIAL"
   const notices = await repository.listNotices(groupId)
+  const members = await repository.listGroupMembers(groupId)
+  const applications = await repository.listGroupApplications(groupId)
+  const logs = await repository.listGroupLogs(groupId)
 
   return (
     <div className="min-h-screen bg-page text-body flex flex-col font-sans">
@@ -133,7 +137,7 @@ export default async function GroupDetailsPage({
           <GroupNoticeFeed groupId={groupId} initialNotices={notices} isOfficer={isOfficer} />
         </div>
 
-        {/* Right Side: Group Info Sidebar */}
+        {/* Right Side: Group Info Sidebar & Management */}
         <div className="w-full md:w-80 space-y-6">
           <div className="bg-surface border border-border rounded-xl p-5 shadow-lg space-y-4">
             <h3 className="text-sm font-medium text-body border-b border-border/30 pb-2">
@@ -142,7 +146,7 @@ export default async function GroupDetailsPage({
             <div className="space-y-3">
               <div className="flex items-center gap-2.5 text-xs text-muted">
                 <Users size={14} className="text-brand-light" />
-                <span>Members allowed to view feed</span>
+                <span>{members.length} members joined</span>
               </div>
               <div className="flex items-center gap-2.5 text-xs text-muted">
                 <Calendar size={14} className="text-brand-light" />
@@ -157,6 +161,15 @@ export default async function GroupDetailsPage({
               Back to Explore
             </Link>
           </div>
+
+          <GroupManagement
+            groupId={groupId}
+            currentUserId={user.id}
+            currentUserRole={userRole || "MEMBER"}
+            members={members}
+            applications={applications}
+            logs={logs}
+          />
         </div>
       </main>
     </div>

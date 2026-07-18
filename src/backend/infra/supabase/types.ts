@@ -14,18 +14,21 @@ export type Database = {
           id: string
           email: string
           full_name: string | null
+          main_account: string
           created_at: string
         }
         Insert: {
           id: string
           email: string
           full_name?: string | null
+          main_account: string
           created_at?: string
         }
         Update: {
           id?: string
           email?: string
           full_name?: string | null
+          main_account?: string
           created_at?: string
         }
         Relationships: []
@@ -147,6 +150,39 @@ export type Database = {
         }
         Relationships: []
       }
+      group_logs: {
+        Row: {
+          id: string
+          group_id: string
+          action: Database["public"]["Enums"]["log_action"]
+          target_id: string
+          target_name: string
+          actor_id: string | null
+          actor_name: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          group_id: string
+          action: Database["public"]["Enums"]["log_action"]
+          target_id: string
+          target_name: string
+          actor_id?: string | null
+          actor_name?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          group_id?: string
+          action?: Database["public"]["Enums"]["log_action"]
+          target_id?: string
+          target_name?: string
+          actor_id?: string | null
+          actor_name?: string | null
+          created_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -157,6 +193,7 @@ export type Database = {
     Enums: {
       group_role: "CREATOR" | "OFFICIAL" | "MEMBER"
       application_status: "PENDING" | "ACCEPTED" | "REJECTED"
+      log_action: "APPLIED" | "ACCEPTED" | "REJECTED" | "REMOVED" | "LEFT"
     }
     CompositeTypes: {
       [_ in never]: never
