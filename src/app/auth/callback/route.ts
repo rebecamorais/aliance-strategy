@@ -10,16 +10,29 @@ export async function GET(request: Request) {
     origin = origin.replace("http://", "https://")
   }
 
-  if (code) {
-    const supabase = await createClient()
-    const { error } = await supabase.auth.exchangeCodeForSession(code)
-    
-    if (!error) {
-      // Successful login. Redirect to internal protected area
-      return NextResponse.redirect(`${origin}/dashboard/profile`)
+  try {
+    if (code) {
+      const supabase = await createClient()
+      const { error } = await supabase.auth.exchangeCodeForSession(code)
+      if (!error) {
+        const forwardedHost = request.headers.get("x-forwarded-host")
+        const isLocalEnv = process.env.NODE_ENV === "development"
+        if (isLocalEnv) {
+          return NextResponse.redirect(`${origin}/dashboard/profile`)
+        } else if (forwardedHost) {
+          return NextResponse.redirect(`https://${forwardedHost}/dashboard/profile`)
+        } else {
+          return NextResponse.redirect(`${origin}/dashboard/profile`)
+        }
+      } else {
+        console.error("Exchange code error:", error)
+        return NextResponse.redirect(`${origin}/?error=${encodeURIComponent(error.message)}`)
+      }
     }
+    return NextResponse.redirect(`${origin}/auth/auth-code-error`)
+  } catch (err: unknown) {
+    console.error("Critical Auth Callback exception:", err)
+    const errorMsg = err instanceof Error ? err.message : String(err)
+    return NextResponse.json({ success: false, error: errorMsg }, { status: 500 })
   }
-
-  // Authentication failed or code missing
-  return NextResponse.redirect(`${origin}/?error=auth_failed`)
 }
