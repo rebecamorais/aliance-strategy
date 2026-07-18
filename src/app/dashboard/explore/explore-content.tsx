@@ -127,10 +127,13 @@ export function ExploreGroupsContent({ initialGroups }: Props) {
                 </div>
 
                 {group.is_member ? (
-                  <span className="flex items-center gap-1 text-xs font-medium text-success bg-success/10 border border-success/20 px-3 py-1.5 rounded-lg">
+                  <Link
+                    href={`/dashboard/groups/${group.id}`}
+                    className="flex items-center gap-1 text-xs font-medium text-success bg-success/10 border border-success/20 px-3 py-1.5 rounded-lg hover:bg-success/20 transition-all cursor-pointer"
+                  >
                     <Check size={12} />
-                    Member
-                  </span>
+                    View Group
+                  </Link>
                 ) : group.has_pending_application ? (
                   <span className="flex items-center gap-1 text-xs font-medium text-warning bg-warning/10 border border-warning/20 px-3 py-1.5 rounded-lg">
                     <Clock size={12} />

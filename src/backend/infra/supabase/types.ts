@@ -123,6 +123,30 @@ export type Database = {
         }
         Relationships: []
       }
+      group_notices: {
+        Row: {
+          id: string
+          group_id: string
+          profile_id: string
+          content: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          group_id: string
+          profile_id: string
+          content: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          group_id?: string
+          profile_id?: string
+          content?: string
+          created_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
