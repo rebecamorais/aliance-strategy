@@ -1,6 +1,7 @@
 import { Group, CreateGroupInput, GroupWithMemberCount, GroupRole, GroupManagementMember, GroupManagementApplication, MyGroupDetails } from "./group.schema"
 import { GroupNotice } from "./group-notice.schema"
 import { GroupLog } from "./group-log.schema"
+import { CalendarEvent, CreateCalendarEventInput } from "./calendar-event.schema"
 
 export interface GroupRepository {
   create(input: CreateGroupInput, creatorProfileId: string): Promise<Group>
@@ -21,4 +22,7 @@ export interface GroupRepository {
   deleteGroup(groupId: string, profileId: string): Promise<void>
   listMyGroups(profileId: string): Promise<MyGroupDetails[]>
   deleteNotice(noticeId: string, profileId: string): Promise<void>
+  listCalendarEvents(groupId: string, start: Date, end: Date): Promise<CalendarEvent[]>
+  createCalendarEvent(input: CreateCalendarEventInput, profileId: string): Promise<CalendarEvent>
+  deleteCalendarEvent(eventId: string, profileId: string): Promise<void>
 }

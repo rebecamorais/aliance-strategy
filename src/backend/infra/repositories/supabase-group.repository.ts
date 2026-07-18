@@ -2,6 +2,7 @@ import { GroupRepository } from "@backend/core/entities/group.repository"
 import { Group, CreateGroupInput, GroupWithMemberCount, GroupRole, GroupManagementMember, GroupManagementApplication, MyGroupDetails } from "@backend/core/entities/group.schema"
 import { GroupNotice } from "@backend/core/entities/group-notice.schema"
 import { GroupLog, LogAction } from "@backend/core/entities/group-log.schema"
+import { CalendarEvent, CreateCalendarEventInput } from "@backend/core/entities/calendar-event.schema"
 import { SupabaseClient } from "@supabase/supabase-js"
 import { Database } from "@backend/infra/supabase/types"
 
@@ -605,6 +606,98 @@ export class SupabaseGroupRepository implements GroupRepository {
 
     if (deleteError) {
       throw new Error(`Failed to delete notice: ${deleteError.message}`)
+    }
+  }
+
+  async listCalendarEvents(groupId: string, start: Date, end: Date): Promise<CalendarEvent[]> {
+    const { data, error } = await this.supabase
+      .from("calendar_events")
+      .select("*")
+      .eq("group_id", groupId)
+      .gte("end_time", start.toISOString())
+      .lte("start_time", end.toISOString())
+      .order("start_time", { ascending: true })
+
+    if (error) {
+      throw new Error(`Failed to list calendar events: ${error.message}`)
+    }
+
+    return (data || []).map((row) => ({
+      id: row.id,
+      title: row.title,
+      description: row.description,
+      startTime: row.start_time,
+      endTime: row.end_time,
+      isAllDay: row.is_all_day,
+      groupId: row.group_id,
+      createdBy: row.created_by,
+    }))
+  }
+
+  async createCalendarEvent(input: CreateCalendarEventInput, profileId: string): Promise<CalendarEvent> {
+    const role = await this.getUserRole(profileId, input.groupId)
+    if (role !== "CREATOR" && role !== "OFFICIAL") {
+      throw new Error("Forbidden: Only officers can create group calendar events.")
+    }
+
+    const { data, error } = await this.supabase
+      .from("calendar_events")
+      .insert({
+        title: input.title,
+        description: input.description || null,
+        start_time: input.startTime,
+        end_time: input.endTime,
+        is_all_day: input.isAllDay,
+        group_id: input.groupId,
+        created_by: profileId,
+      })
+      .select()
+      .single()
+
+    if (error || !data) {
+      throw new Error(`Failed to create calendar event: ${error?.message || "Unknown error"}`)
+    }
+
+    return {
+      id: data.id,
+      title: data.title,
+      description: data.description,
+      startTime: data.start_time,
+      endTime: data.end_time,
+      isAllDay: data.is_all_day,
+      groupId: data.group_id,
+      createdBy: data.created_by,
+    }
+  }
+
+  async deleteCalendarEvent(eventId: string, profileId: string): Promise<void> {
+    const { data: event, error: fetchError } = await this.supabase
+      .from("calendar_events")
+      .select("group_id, created_by")
+      .eq("id", eventId)
+      .maybeSingle()
+
+    if (fetchError || !event) {
+      throw new Error("Calendar event not found.")
+    }
+
+    if (event.created_by !== profileId) {
+      if (!event.group_id) {
+        throw new Error("Forbidden: You do not have permission to delete this event.")
+      }
+      const role = await this.getUserRole(profileId, event.group_id)
+      if (role !== "CREATOR" && role !== "OFFICIAL") {
+        throw new Error("Forbidden: Only officers or the event creator can delete this event.")
+      }
+    }
+
+    const { error: deleteError } = await this.supabase
+      .from("calendar_events")
+      .delete()
+      .eq("id", eventId)
+
+    if (deleteError) {
+      throw new Error(`Failed to delete calendar event: ${deleteError.message}`)
     }
   }
 }

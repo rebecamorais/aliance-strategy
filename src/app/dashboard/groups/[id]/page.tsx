@@ -3,6 +3,7 @@ import { SupabaseGroupRepository } from "@backend/infra/repositories/supabase-gr
 import { isSupabasePlaceholder } from "@shared/supabase-config"
 import { AuthHeader } from "@/frontend/components/auth/auth-header"
 import { GroupNoticeFeed } from "./group-feed"
+import { GroupCalendar } from "./group-calendar"
 import { GroupManagement } from "./group-management"
 import { GroupActions } from "./group-actions"
 import { Shield, ShieldAlert, ArrowLeft, Users, Calendar } from "lucide-react"
@@ -13,14 +14,17 @@ export const dynamic = "force-dynamic"
 
 export default async function GroupDetailsPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>
+  searchParams: Promise<{ tab?: string }>
 }) {
   if (isSupabasePlaceholder()) {
     return redirect("/dashboard/explore")
   }
 
   const { id: groupId } = await params
+  const { tab } = await searchParams
   const supabase = await createClient()
   const {
     data: { user },
@@ -135,7 +139,35 @@ export default async function GroupDetailsPage({
             </div>
           </div>
 
-          <GroupNoticeFeed groupId={groupId} initialNotices={notices} isOfficer={isOfficer} currentUserId={user.id} />
+          {/* Tabs Navigation Header */}
+          <div className="flex border-b border-border/30 mb-6 bg-surface/20 rounded-t-xl px-2">
+            <Link
+              href={`/dashboard/groups/${groupId}?tab=mural`}
+              className={`px-5 py-3 text-xs font-semibold border-b-2 transition-all cursor-pointer ${
+                tab !== "calendar"
+                  ? "border-brand text-brand-light font-bold bg-brand-subtle/5"
+                  : "border-transparent text-muted hover:text-body"
+              }`}
+            >
+              Mural
+            </Link>
+            <Link
+              href={`/dashboard/groups/${groupId}?tab=calendar`}
+              className={`px-5 py-3 text-xs font-semibold border-b-2 transition-all cursor-pointer ${
+                tab === "calendar"
+                  ? "border-brand text-brand-light font-bold bg-brand-subtle/5"
+                  : "border-transparent text-muted hover:text-body"
+              }`}
+            >
+              Calendar
+            </Link>
+          </div>
+
+          {tab === "calendar" ? (
+            <GroupCalendar groupId={groupId} isOfficer={isOfficer} currentUserId={user.id} />
+          ) : (
+            <GroupNoticeFeed groupId={groupId} initialNotices={notices} isOfficer={isOfficer} currentUserId={user.id} />
+          )}
         </div>
 
         {/* Right Side: Group Info Sidebar & Management */}

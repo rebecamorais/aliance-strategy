@@ -36,6 +36,45 @@ export type Database = {
         }
         Relationships: []
       }
+      calendar_events: {
+        Row: {
+          id: string
+          title: string
+          description: string | null
+          start_time: string
+          end_time: string
+          is_all_day: boolean
+          group_id: string | null
+          created_by: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          title: string
+          description?: string | null
+          start_time: string
+          end_time: string
+          is_all_day?: boolean
+          group_id?: string | null
+          created_by: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          title?: string
+          description?: string | null
+          start_time?: string
+          end_time?: string
+          is_all_day?: boolean
+          group_id?: string | null
+          created_by?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       notices: {
         Row: {
           id: string
