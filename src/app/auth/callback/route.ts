@@ -15,6 +15,17 @@ export async function GET(request: Request) {
       const supabase = await createClient()
       const { error } = await supabase.auth.exchangeCodeForSession(code)
       if (!error) {
+        const { data: { user } } = await supabase.auth.getUser()
+        if (user) {
+          await supabase
+            .from("profiles")
+            .update({
+              avatar_url: user.user_metadata?.avatar_url || "",
+              login_method: user.app_metadata?.provider || "email",
+            })
+            .eq("id", user.id)
+        }
+
         const forwardedHost = request.headers.get("x-forwarded-host")
         const isLocalEnv = process.env.NODE_ENV === "development"
         if (isLocalEnv) {

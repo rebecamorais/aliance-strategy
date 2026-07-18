@@ -79,6 +79,8 @@ export interface GroupManagementMember {
   main_account: string
   nickname: string | null
   full_name: string | null
+  avatar_url: string | null
+  login_method: string | null
 }
 
 export interface GroupManagementApplication {
@@ -88,6 +90,8 @@ export interface GroupManagementApplication {
   main_account: string
   nickname: string | null
   full_name: string | null
+  avatar_url: string | null
+  login_method: string | null
 }
 
 export interface MyGroupDetails extends GroupWithMemberCount {

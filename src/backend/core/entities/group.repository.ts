@@ -25,4 +25,5 @@ export interface GroupRepository {
   listCalendarEvents(groupId: string, start: Date, end: Date): Promise<CalendarEvent[]>
   createCalendarEvent(input: CreateCalendarEventInput, profileId: string): Promise<CalendarEvent>
   deleteCalendarEvent(eventId: string, profileId: string): Promise<void>
+  updateMemberRole(groupId: string, targetProfileId: string, role: GroupRole, actorProfileId: string): Promise<void>
 }

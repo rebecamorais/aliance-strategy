@@ -11,6 +11,8 @@ interface Member {
   main_account: string
   nickname: string | null
   full_name: string | null
+  avatar_url?: string | null
+  login_method?: string | null
 }
 
 interface Application {
@@ -20,6 +22,8 @@ interface Application {
   main_account: string
   nickname: string | null
   full_name: string | null
+  avatar_url?: string | null
+  login_method?: string | null
 }
 
 interface Log {
@@ -117,6 +121,35 @@ export function GroupManagement({
     })
   }
 
+  const handleUpdateRole = async (targetProfileId: string, newRole: "OFFICIAL" | "MEMBER") => {
+    const actionText = newRole === "OFFICIAL" ? "promote" : "demote"
+    if (!confirm(`Are you sure you want to ${actionText} this member?`)) return
+
+    setErrorMsg("")
+    setSuccessMsg("")
+
+    startTransition(async () => {
+      try {
+        const res = await fetch(`/api/groups/${groupId}/members/${targetProfileId}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ role: newRole }),
+        })
+
+        const data = await res.json()
+
+        if (res.ok && data.success) {
+          setSuccessMsg(data.message || `Member successfully ${actionText}d.`)
+          await refreshGroupData()
+        } else {
+          setErrorMsg(data.message || `Failed to ${actionText} member.`)
+        }
+      } catch {
+        setErrorMsg(`An error occurred while trying to ${actionText} member.`)
+      }
+    })
+  }
+
   const canRemove = (targetRole: string, targetProfileId: string) => {
     if (targetProfileId === currentUserId) return false
     if (currentUserRole === "CREATOR") return true
@@ -172,11 +205,29 @@ export function GroupManagement({
           <div className="divide-y divide-border/30">
             {applications.map((app) => (
               <div key={app.id} className="py-3 flex items-center justify-between gap-4 first:pt-0 last:pb-0">
-                <div>
-                  <p className="text-xs font-medium text-body">
-                    @{app.main_account}
-                    {app.nickname && <span className="text-[10px] text-muted font-normal ml-1.5">({app.nickname})</span>}
-                  </p>
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full overflow-hidden bg-brand-subtle flex items-center justify-center border border-border/50 shrink-0">
+                    {app.avatar_url ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={app.avatar_url} alt={app.main_account} className="w-full h-full object-cover" />
+                    ) : (
+                      <span className="text-xs font-semibold text-brand-light">
+                        {app.main_account.substring(0, 2).toUpperCase()}
+                      </span>
+                    )}
+                  </div>
+                  <div>
+                    <p className="text-xs font-medium text-body flex items-center gap-2">
+                      @{app.main_account}
+                      {app.nickname && <span className="text-[10px] text-muted font-normal">({app.nickname})</span>}
+                    </p>
+                    {app.login_method && (
+                      <p className="text-[9px] text-muted flex items-center gap-1 mt-0.5">
+                        <span>Method:</span>
+                        <span className="font-semibold uppercase text-brand-light/95">{app.login_method}</span>
+                      </p>
+                    )}
+                  </div>
                 </div>
                 <div className="flex items-center gap-2">
                   <button
@@ -209,39 +260,69 @@ export function GroupManagement({
         <div className="divide-y divide-border/30">
           {members.map((m) => {
             const allowedToKick = canRemove(m.role, m.profile_id)
+            const allowedToPromoteDemote = currentUserRole === "CREATOR" && m.profile_id !== currentUserId
             return (
               <div key={m.profile_id} className="py-3 flex items-center justify-between gap-4 first:pt-0 last:pb-0">
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs font-medium text-body">
-                      {isOfficer ? (
-                        m.nickname ? (
-                          <>
-                            {m.nickname}
-                            <span className="text-[10px] text-muted font-normal ml-1.5">(@{m.main_account})</span>
-                          </>
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full overflow-hidden bg-brand-subtle flex items-center justify-center border border-border/50 shrink-0">
+                    {m.avatar_url ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={m.avatar_url} alt={m.main_account} className="w-full h-full object-cover" />
+                    ) : (
+                      <span className="text-xs font-semibold text-brand-light">
+                        {m.main_account.substring(0, 2).toUpperCase()}
+                      </span>
+                    )}
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-medium text-body">
+                        {isOfficer ? (
+                          m.nickname ? (
+                            <>
+                              {m.nickname}
+                              <span className="text-[10px] text-muted font-normal ml-1.5">(@{m.main_account})</span>
+                            </>
+                          ) : (
+                            `@${m.main_account}`
+                          )
                         ) : (
-                          `@${m.main_account}`
-                        )
-                      ) : (
-                        m.nickname || "Member"
-                      )}
-                    </span>
-                    <span className="text-[9px] font-medium tracking-wide uppercase px-2 py-0.5 rounded border border-border bg-page text-muted">
-                      {m.role}
-                    </span>
+                          m.nickname || "Member"
+                        )}
+                      </span>
+                      <span className="text-[9px] font-medium tracking-wide uppercase px-2 py-0.5 rounded border border-border bg-page text-muted">
+                        {m.role}
+                      </span>
+                    </div>
+                    {isOfficer && m.login_method && (
+                      <p className="text-[9px] text-muted flex items-center gap-1 mt-0.5">
+                        <span>Method:</span>
+                        <span className="font-semibold uppercase text-brand-light/95">{m.login_method}</span>
+                      </p>
+                    )}
                   </div>
                 </div>
-                {allowedToKick && (
-                  <button
-                    onClick={() => handleRemoveMember(m.profile_id)}
-                    disabled={isPending}
-                    className="flex items-center gap-1 text-[10px] font-medium border border-error/20 bg-error/10 text-error px-2.5 py-1.5 rounded-lg hover:bg-error/20 active:scale-[0.98] transition-all cursor-pointer disabled:opacity-50"
-                  >
-                    <UserX size={10} />
-                    Kick
-                  </button>
-                )}
+                <div className="flex items-center gap-2">
+                  {allowedToPromoteDemote && (
+                    <button
+                      onClick={() => handleUpdateRole(m.profile_id, m.role === "MEMBER" ? "OFFICIAL" : "MEMBER")}
+                      disabled={isPending}
+                      className="flex items-center gap-1 text-[10px] font-medium border border-brand/20 bg-brand/10 text-brand-light px-2.5 py-1.5 rounded-lg hover:bg-brand/20 active:scale-[0.98] transition-all cursor-pointer disabled:opacity-50"
+                    >
+                      {m.role === "MEMBER" ? "Promote" : "Demote"}
+                    </button>
+                  )}
+                  {allowedToKick && (
+                    <button
+                      onClick={() => handleRemoveMember(m.profile_id)}
+                      disabled={isPending}
+                      className="flex items-center gap-1 text-[10px] font-medium border border-error/20 bg-error/10 text-error px-2.5 py-1.5 rounded-lg hover:bg-error/20 active:scale-[0.98] transition-all cursor-pointer disabled:opacity-50"
+                    >
+                      <UserX size={10} />
+                      Kick
+                    </button>
+                  )}
+                </div>
               </div>
             )
           })}

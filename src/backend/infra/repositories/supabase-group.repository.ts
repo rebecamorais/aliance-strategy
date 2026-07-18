@@ -443,7 +443,9 @@ export class SupabaseGroupRepository implements GroupRepository {
         profiles (
           main_account,
           nickname,
-          full_name
+          full_name,
+          avatar_url,
+          login_method
         )
       `)
       .eq("group_id", groupId)
@@ -455,7 +457,13 @@ export class SupabaseGroupRepository implements GroupRepository {
     }
 
     return (data || []).map((row) => {
-      const profile = row.profiles as unknown as { main_account: string; nickname: string | null; full_name: string | null } | null
+      const profile = row.profiles as unknown as {
+        main_account: string
+        nickname: string | null
+        full_name: string | null
+        avatar_url: string | null
+        login_method: string | null
+      } | null
       return {
         id: row.id,
         profile_id: row.profile_id,
@@ -463,6 +471,8 @@ export class SupabaseGroupRepository implements GroupRepository {
         main_account: profile?.main_account || "Unknown User",
         nickname: profile?.nickname || null,
         full_name: profile?.full_name || null,
+        avatar_url: profile?.avatar_url || null,
+        login_method: profile?.login_method || null,
       }
     })
   }
@@ -477,7 +487,9 @@ export class SupabaseGroupRepository implements GroupRepository {
         profiles (
           main_account,
           nickname,
-          full_name
+          full_name,
+          avatar_url,
+          login_method
         )
       `)
       .eq("group_id", groupId)
@@ -488,7 +500,13 @@ export class SupabaseGroupRepository implements GroupRepository {
     }
 
     return (data || []).map((row) => {
-      const profile = row.profiles as unknown as { main_account: string; nickname: string | null; full_name: string | null } | null
+      const profile = row.profiles as unknown as {
+        main_account: string
+        nickname: string | null
+        full_name: string | null
+        avatar_url: string | null
+        login_method: string | null
+      } | null
       return {
         profile_id: row.profile_id,
         role: row.role as GroupRole,
@@ -496,6 +514,8 @@ export class SupabaseGroupRepository implements GroupRepository {
         main_account: profile?.main_account || "Unknown User",
         nickname: profile?.nickname || null,
         full_name: profile?.full_name || null,
+        avatar_url: profile?.avatar_url || null,
+        login_method: profile?.login_method || null,
       }
     })
   }
@@ -698,6 +718,53 @@ export class SupabaseGroupRepository implements GroupRepository {
 
     if (deleteError) {
       throw new Error(`Failed to delete calendar event: ${deleteError.message}`)
+    }
+  }
+
+  async updateMemberRole(
+    groupId: string,
+    targetProfileId: string,
+    newRole: GroupRole,
+    actorProfileId: string
+  ): Promise<void> {
+    const { data: actorMember, error: actorError } = await this.supabase
+      .from("group_members")
+      .select("role")
+      .eq("profile_id", actorProfileId)
+      .eq("group_id", groupId)
+      .maybeSingle()
+
+    if (actorError || !actorMember || actorMember.role !== "CREATOR") {
+      throw new Error("Forbidden: Only the group Creator can promote or demote members.")
+    }
+
+    if (newRole !== "OFFICIAL" && newRole !== "MEMBER") {
+      throw new Error("Invalid role specified.")
+    }
+
+    const { data: targetMember, error: targetError } = await this.supabase
+      .from("group_members")
+      .select("role")
+      .eq("profile_id", targetProfileId)
+      .eq("group_id", groupId)
+      .maybeSingle()
+
+    if (targetError || !targetMember) {
+      throw new Error("Target member not found in this group.")
+    }
+
+    if (targetMember.role === "CREATOR") {
+      throw new Error("Forbidden: The Creator's role cannot be modified.")
+    }
+
+    const { error: updateError } = await this.supabase
+      .from("group_members")
+      .update({ role: newRole })
+      .eq("profile_id", targetProfileId)
+      .eq("group_id", groupId)
+
+    if (updateError) {
+      throw new Error(`Failed to update member role: ${updateError.message}`)
     }
   }
 }
