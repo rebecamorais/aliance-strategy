@@ -13,6 +13,7 @@ interface Member {
   full_name: string | null
   avatar_url?: string | null
   login_method?: string | null
+  email?: string | null
 }
 
 interface Application {
@@ -24,6 +25,7 @@ interface Application {
   full_name: string | null
   avatar_url?: string | null
   login_method?: string | null
+  email?: string | null
 }
 
 interface Log {
@@ -54,7 +56,19 @@ export function GroupManagement({
   const [isPending, startTransition] = useTransition()
   const [errorMsg, setErrorMsg] = useState("")
   const [successMsg, setSuccessMsg] = useState("")
+  const [selectedProfile, setSelectedProfile] = useState<Member | Application | null>(null)
   const router = useRouter()
+
+  const maskEmail = (email: string | null | undefined): string => {
+    if (!email) return "Not provided"
+    const parts = email.split("@")
+    if (parts.length !== 2) return email
+    const [local, domain] = parts
+    const maskedLocal = local.length > 2 
+      ? local[0] + "*".repeat(local.length - 2) + local[local.length - 1]
+      : local[0] + "*"
+    return `${maskedLocal}@${domain}`
+  }
 
   const isOfficer = currentUserRole === "CREATOR" || currentUserRole === "OFFICIAL"
 
@@ -206,25 +220,27 @@ export function GroupManagement({
             {applications.map((app) => (
               <div key={app.id} className="py-3 flex items-center justify-between gap-4 first:pt-0 last:pb-0">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full overflow-hidden bg-brand-subtle flex items-center justify-center border border-border/50 shrink-0">
+                  <div 
+                    onClick={() => setSelectedProfile(app)}
+                    className="w-8 h-8 rounded-full overflow-hidden bg-brand-subtle flex items-center justify-center border border-border/50 shrink-0 cursor-pointer hover:opacity-85 transition-opacity"
+                  >
                     {app.avatar_url ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img src={app.avatar_url} alt={app.main_account} className="w-full h-full object-cover" />
                     ) : (
-                      <span className="text-xs font-semibold text-brand-light">
+                      <span className="text-xs font-medium text-brand-light">
                         {app.main_account.substring(0, 2).toUpperCase()}
                       </span>
                     )}
                   </div>
                   <div>
                     <p className="text-xs font-medium text-body flex items-center gap-2">
-                      @{app.main_account}
-                      {app.nickname && <span className="text-[10px] text-muted font-normal">({app.nickname})</span>}
+                      {app.nickname || `@${app.main_account}`}
                     </p>
                     {app.login_method && (
                       <p className="text-[9px] text-muted flex items-center gap-1 mt-0.5">
                         <span>Method:</span>
-                        <span className="font-semibold uppercase text-brand-light/95">{app.login_method}</span>
+                        <span className="font-medium uppercase text-brand-light/95">{app.login_method}</span>
                       </p>
                     )}
                   </div>
@@ -264,12 +280,15 @@ export function GroupManagement({
             return (
               <div key={m.profile_id} className="py-3 flex items-center justify-between gap-4 first:pt-0 last:pb-0">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full overflow-hidden bg-brand-subtle flex items-center justify-center border border-border/50 shrink-0">
+                  <div 
+                    onClick={() => setSelectedProfile(m)}
+                    className="w-8 h-8 rounded-full overflow-hidden bg-brand-subtle flex items-center justify-center border border-border/50 shrink-0 cursor-pointer hover:opacity-85 transition-opacity"
+                  >
                     {m.avatar_url ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img src={m.avatar_url} alt={m.main_account} className="w-full h-full object-cover" />
                     ) : (
-                      <span className="text-xs font-semibold text-brand-light">
+                      <span className="text-xs font-medium text-brand-light">
                         {m.main_account.substring(0, 2).toUpperCase()}
                       </span>
                     )}
@@ -277,18 +296,7 @@ export function GroupManagement({
                   <div>
                     <div className="flex items-center gap-2">
                       <span className="text-xs font-medium text-body">
-                        {isOfficer ? (
-                          m.nickname ? (
-                            <>
-                              {m.nickname}
-                              <span className="text-[10px] text-muted font-normal ml-1.5">(@{m.main_account})</span>
-                            </>
-                          ) : (
-                            `@${m.main_account}`
-                          )
-                        ) : (
-                          m.nickname || "Member"
-                        )}
+                        {m.nickname || `@${m.main_account}`}
                       </span>
                       <span className="text-[9px] font-medium tracking-wide uppercase px-2 py-0.5 rounded border border-border bg-page text-muted">
                         {m.role}
@@ -297,7 +305,7 @@ export function GroupManagement({
                     {isOfficer && m.login_method && (
                       <p className="text-[9px] text-muted flex items-center gap-1 mt-0.5">
                         <span>Method:</span>
-                        <span className="font-semibold uppercase text-brand-light/95">{m.login_method}</span>
+                        <span className="font-medium uppercase text-brand-light/95">{m.login_method}</span>
                       </p>
                     )}
                   </div>
@@ -350,6 +358,95 @@ export function GroupManagement({
           </div>
         )}
       </div>
+      {/* Profile Modal Pop-up */}
+      {selectedProfile && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
+          <div className="relative w-full max-w-md bg-surface border border-border rounded-xl p-6 shadow-2xl space-y-6 text-left">
+            <button
+              onClick={() => setSelectedProfile(null)}
+              className="absolute right-4 top-4 p-1.5 rounded-lg border border-border hover:bg-surface2 text-muted hover:text-body transition-all cursor-pointer"
+            >
+              <X size={16} />
+            </button>
+
+            <div className="flex flex-col items-center text-center space-y-4">
+              <div className="w-20 h-20 rounded-full overflow-hidden bg-brand-subtle border-2 border-brand/50 flex items-center justify-center shadow-lg">
+                {selectedProfile.avatar_url ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={selectedProfile.avatar_url} alt={selectedProfile.main_account} className="w-full h-full object-cover" />
+                ) : (
+                  <span className="text-2xl font-medium text-brand-light">
+                    {selectedProfile.main_account.substring(0, 2).toUpperCase()}
+                  </span>
+                )}
+              </div>
+
+              <div>
+                <h3 className="text-xl font-medium text-body tracking-tight">
+                  {selectedProfile.nickname || "No Nickname"}
+                </h3>
+                {selectedProfile.nickname && (
+                  <p className="text-xs text-muted mt-0.5">@{selectedProfile.main_account}</p>
+                )}
+              </div>
+            </div>
+
+            <div className="border-t border-border/40 pt-4 space-y-3">
+              <div className="flex justify-between items-center text-xs">
+                <span className="text-muted">Full Name</span>
+                <span className="text-body font-medium">{selectedProfile.full_name || "N/A"}</span>
+              </div>
+              <div className="flex justify-between items-center text-xs">
+                <span className="text-muted">Account/ID</span>
+                <span className="text-body font-medium">@{selectedProfile.main_account}</span>
+              </div>
+              <div className="flex justify-between items-center text-xs">
+                <span className="text-muted">Email</span>
+                <span className="text-body font-medium">{maskEmail(selectedProfile.email)}</span>
+              </div>
+              <div className="flex justify-between items-center text-xs">
+                <span className="text-muted">Login Method</span>
+                <span className="text-accent-light font-medium uppercase tracking-wide">
+                  {selectedProfile.login_method || "Email"}
+                </span>
+              </div>
+              {"role" in selectedProfile && (
+                <div className="flex justify-between items-center text-xs">
+                  <span className="text-muted">Role</span>
+                  <span className="px-2 py-0.5 rounded border border-border bg-page text-xs font-medium text-muted uppercase">
+                    {selectedProfile.role}
+                  </span>
+                </div>
+              )}
+              {"joined_at" in selectedProfile && (
+                <div className="flex justify-between items-center text-xs">
+                  <span className="text-muted">Member Since</span>
+                  <span className="text-body font-medium">
+                    {new Date(selectedProfile.joined_at).toLocaleDateString()}
+                  </span>
+                </div>
+              )}
+              {"created_at" in selectedProfile && (
+                <div className="flex justify-between items-center text-xs">
+                  <span className="text-muted">Applied On</span>
+                  <span className="text-body font-medium">
+                    {new Date(selectedProfile.created_at).toLocaleDateString()}
+                  </span>
+                </div>
+              )}
+            </div>
+
+            <div className="flex justify-end pt-2">
+              <button
+                onClick={() => setSelectedProfile(null)}
+                className="bg-brand text-page text-xs font-medium px-4 py-2 rounded-lg hover:bg-brand-light active:bg-brand-dark transition-colors cursor-pointer"
+              >
+                Close Profile
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

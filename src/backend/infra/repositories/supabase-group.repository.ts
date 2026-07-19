@@ -445,7 +445,8 @@ export class SupabaseGroupRepository implements GroupRepository {
           nickname,
           full_name,
           avatar_url,
-          login_method
+          login_method,
+          email
         )
       `)
       .eq("group_id", groupId)
@@ -463,6 +464,7 @@ export class SupabaseGroupRepository implements GroupRepository {
         full_name: string | null
         avatar_url: string | null
         login_method: string | null
+        email: string | null
       } | null
       return {
         id: row.id,
@@ -473,6 +475,7 @@ export class SupabaseGroupRepository implements GroupRepository {
         full_name: profile?.full_name || null,
         avatar_url: profile?.avatar_url || null,
         login_method: profile?.login_method || null,
+        email: profile?.email || null,
       }
     })
   }
@@ -489,7 +492,8 @@ export class SupabaseGroupRepository implements GroupRepository {
           nickname,
           full_name,
           avatar_url,
-          login_method
+          login_method,
+          email
         )
       `)
       .eq("group_id", groupId)
@@ -506,6 +510,7 @@ export class SupabaseGroupRepository implements GroupRepository {
         full_name: string | null
         avatar_url: string | null
         login_method: string | null
+        email: string | null
       } | null
       return {
         profile_id: row.profile_id,
@@ -516,6 +521,7 @@ export class SupabaseGroupRepository implements GroupRepository {
         full_name: profile?.full_name || null,
         avatar_url: profile?.avatar_url || null,
         login_method: profile?.login_method || null,
+        email: profile?.email || null,
       }
     })
   }
